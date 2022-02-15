@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "bulma": "^0.9.3",
+    "firebase": "^9.6.6",
     "vue": "^3.2.25",
     "vue-router": "^4.0.12",
     "vuex": "^4.0.2"

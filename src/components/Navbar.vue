@@ -1,37 +1,36 @@
 <template>
   <nav class="navbar container" role="navigation" aria-label="main navigation">
-  <div class="navbar-brand">
-    <router-link class="navbar-item" to="/">
-      <img src="../assets/logo.png" width="100">
-    </router-link>
+    <div class="navbar-brand">
+      <router-link class="navbar-item" to="/">
+        <img src="../assets/logo.png" width="100" />
+      </router-link>
+    </div>
 
-    <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
-      <span aria-hidden="true"></span>
-      <span aria-hidden="true"></span>
-      <span aria-hidden="true"></span>
-    </a>
-  </div>
-
-  <div id="navbarBasicExample" class="navbar-menu">
-    <div class="navbar-end">
-      <div class="navbar-item">
-        <div class="buttons">
-          <a class="button is-light">
-            تسجيل خروج
-          </a>
+    <div class="navbar-menu">
+      <div class="navbar-end">
+        <div class="navbar-item">
+          <div class="buttons">
+            <a class="button is-light"> تسجيل خروج </a>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-</nav>
+  </nav>
 </template>
 
 <script>
-export default {
-
-}
+export default {};
 </script>
 
 <style>
-
+.navbar {
+  background: none;
+  display: flex;
+  justify-content: space-between;
+}
+.navbar-menu {
+  display: flex;
+  background: none;
+  box-shadow: none;
+}
 </style>
