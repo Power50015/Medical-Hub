@@ -3,8 +3,8 @@
     <div class="content">
       <p class="title">تسجيل دخول معمل تحايل</p>
       <div class="buttons">
-        <router-link class="button is-primary" to="Home">حساب جديد</router-link>
-        <router-link class="button is-link" to="Home">تسجيل دخول</router-link>
+        <router-link class="button is-primary" to="/laboratory-register">حساب جديد</router-link>
+        <router-link class="button is-link" to="/laboratory-login">تسجيل دخول</router-link>
       </div>
     </div>
   </article>

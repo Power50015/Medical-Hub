@@ -5,7 +5,7 @@
         <div class="columns is-centered">
           <div class="column is-5-tablet is-4-desktop is-4-widescreen">
             <form action="" class="box">
-              <p class="label has-text-centered is-size-5">تسجيل حساب جديد كشركه تأمين</p>
+              <p class="label has-text-centered is-size-5">تسجيل حساب جديد كمعمل تحاليل</p>
               <p class="has-text-centered is-size-6 has-text-danger"></p>
               <br />
               <div class="field">

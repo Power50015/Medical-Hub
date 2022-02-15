@@ -6,9 +6,8 @@
   </div>
   <router-view />
 </template>
-<style>
+<style scoped>
 /*waves****************************/
-
 .box {
   position: fixed;
   top: 0;

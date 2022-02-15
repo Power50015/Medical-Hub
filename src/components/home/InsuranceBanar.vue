@@ -4,10 +4,10 @@
       <div class="content">
         <p class="title">تسجيل دخول شركه تأمين</p>
         <div class="buttons">
-          <router-link class="button is-primary" to="Home"
+          <router-link class="button is-primary" to="/insurance-register"
             >حساب جديد</router-link
           >
-          <router-link class="button is-link" to="Home">تسجيل دخول</router-link>
+          <router-link class="button is-link" to="/insurance-login">تسجيل دخول</router-link>
         </div>
       </div>
     </article>
