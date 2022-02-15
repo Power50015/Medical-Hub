@@ -1,4 +1,5 @@
 <template>
+  <Navbar v-if="$route.path != '/'"/>
   <div class="box">
     <div class="wave -one"></div>
     <div class="wave -two"></div>
@@ -6,6 +7,12 @@
   </div>
   <router-view />
 </template>
+<script>
+import Navbar from "./components/Navbar.vue";
+export default {
+  components: { Navbar },
+};
+</script>
 <style scoped>
 /*waves****************************/
 .box {
