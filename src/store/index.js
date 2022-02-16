@@ -1,10 +1,81 @@
 import { createStore } from "vuex";
 import app from "../firebase";
 import { getFirestore } from "firebase/firestore";
-import { doc, setDoc } from "firebase/firestore";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import {
+  doc,
+  setDoc,
+  collection,
+  getDocs,
+  query,
+  where,
+} from "firebase/firestore";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged,
+} from "firebase/auth";
 
-export default createStore({
+const auth = getAuth();
+const db = getFirestore();
+
+// wait until auth is ready
+const unsub = onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    const q = query(
+      collection(db, "insurances"),
+      where("email", "==", user.email)
+    );
+
+    const querySnapshot = await getDocs(q);
+    if (querySnapshot.empty) {
+      const q = query(
+        collection(db, "laboratorys"),
+        where("email", "==", user.email)
+      );
+      const querySnapshot = await getDocs(q);
+      if (querySnapshot.empty) {
+        const q = query(
+          collection(db, "doctors"),
+          where("email", "==", user.email)
+        );
+        const querySnapshot = await getDocs(q);
+        if (querySnapshot.empty) {
+        } else {
+          querySnapshot.forEach((doc) => {
+            store.commit("userData", {
+              type: "doctors",
+              name: doc.data().name,
+              email: doc.data().email,
+              login: true,
+            });
+          });
+        }
+      } else {
+        querySnapshot.forEach((doc) => {
+          store.commit("laboratorys", {
+            type: "doctors",
+            name: doc.data().name,
+            email: doc.data().email,
+            login: true,
+          });
+        });
+      }
+    } else {
+      querySnapshot.forEach((doc) => {
+        store.commit("insurances", {
+          type: "doctors",
+          name: doc.data().name,
+          email: doc.data().email,
+          login: true,
+        });
+      });
+    }
+  }
+  unsub();
+});
+
+const store = createStore({
   state() {
     return {
       isLogin: false,
@@ -15,7 +86,7 @@ export default createStore({
   },
   mutations: {
     userData(state, payload) {
-      state.isLogin = true;
+      state.isLogin = payload.login;
       state.userType = payload.type;
       state.userName = payload.name;
       state.userEmail = payload.email;
@@ -23,8 +94,6 @@ export default createStore({
   },
   actions: {
     userRegister(context, payload) {
-      const auth = getAuth();
-      const db = getFirestore();
       createUserWithEmailAndPassword(
         auth,
         payload.form.email,
@@ -34,11 +103,27 @@ export default createStore({
           // Signed in
           const user = userCredential.user;
           // Add a new document in collection "cities"
-          setDoc(doc(db, payload.type, payload.form.email), {
-            name: payload.form.name,
-            email: payload.form.email,
+          setDoc(
+            doc(db, payload.type, payload.form.email),
+            payload.type === "doctors"
+              ? {
+                  name: payload.form.name,
+                  email: payload.form.email,
+                  address: payload.form.address,
+                  prof: payload.form.prof,
+                }
+              : {
+                  name: payload.form.name,
+                  email: payload.form.email,
+                }
+          ).then(() => {
+            context.commit("userData", {
+              type: payload.type,
+              name: payload.form.name,
+              email: payload.form.email,
+              login: true,
+            });
           });
-          console.log(user);
         })
         .catch((error) => {
           const errorCode = error.code;
@@ -46,12 +131,17 @@ export default createStore({
           console.log(errorCode);
           console.log(errorMessage);
         });
-      context.commit("userData", {
-        type: payload.type,
-        name: payload.form.name,
-        email: payload.form.email,
+    },
+    userLogout(context) {
+      signOut(auth).then(() => {
+        context.commit("userData", {
+          type: "",
+          name: payload.form.name,
+          email: payload.form.email,
+          login: false,
+        });
       });
     },
   },
-  modules: {},
 });
+export default store;

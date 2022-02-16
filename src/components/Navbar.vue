@@ -9,8 +9,8 @@
     <div class="navbar-menu">
       <div class="navbar-end">
         <div class="navbar-item">
-          <div class="buttons">
-            <a class="button is-light"> تسجيل خروج </a>
+          <div class="buttons" v-show="$store.state.isLogin">
+            <a class="button is-light" @click="$store.dispatch('userLogout')"> تسجيل خروج </a>
           </div>
         </div>
       </div>

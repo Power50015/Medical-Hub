@@ -24,12 +24,33 @@
               <div class="field">
                 <div class="control has-icons-left">
                   <input
-                    type="text"
+                    type="email"
                     placeholder="البريد الإلكترونى"
                     class="input"
                     required
                     v-model="form.email"
                   />
+                </div>
+              </div>
+              <div class="field">
+                <div class="control has-icons-left">
+                  <input
+                    type="text"
+                    placeholder="العنوان"
+                    class="input"
+                    required
+                    v-model="form.address"
+                  />
+                </div>
+              </div>
+              <div class="field">
+                <div class="control has-icons-left">
+                  <select v-model="form.prof" class="input" required>
+                    <option value="باطنه">باطنه</option>
+                    <option value="عظام">عظام</option>
+                    <option value="جراحه">جراحه</option>
+                    <option value="رمد">رمد</option>
+                  </select>
                 </div>
               </div>
               <div class="field">
@@ -44,7 +65,18 @@
                 </div>
               </div>
               <div class="field">
-                <button type="submit" class="button is-primary is-fullwidth">
+                <progress
+                  class="progress is-small is-primary"
+                  max="100"
+                  v-show="isDisabled"
+                >
+                  15%
+                </progress>
+                <button
+                  type="submit"
+                  class="button is-primary is-fullwidth"
+                  v-show="!isDisabled"
+                >
                   تسجيل جديد
                 </button>
               </div>
@@ -63,7 +95,7 @@
 </template>
 
 <script>
-import { reactive } from "@vue/reactivity";
+import { reactive, ref } from "@vue/reactivity";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 
@@ -71,18 +103,28 @@ export default {
   setup() {
     const router = useRouter();
     const store = useStore();
-    const form = reactive({ name: "", email: "", password: "" });
+    const form = reactive({
+      name: "",
+      email: "",
+      password: "",
+      address: "",
+      prof: "باطنه",
+    });
+    const isDisabled = ref(false);
     function saveDoctor() {
+      isDisabled.value = true;
       store.dispatch("userRegister", { type: "doctors", form }).then(() => {
-        setInterval(() => {
+        setTimeout(() => {
           form.name = "";
           form.email = "";
           form.password = "";
-          router.push("/");
-        }, 1000);
+          form.address = "";
+          form.prof = "";
+          router.push('/');
+        }, 3000);
       });
     }
-    return { form, saveDoctor };
+    return { form, saveDoctor, isDisabled };
   },
 };
 </script>
