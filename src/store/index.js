@@ -11,6 +11,7 @@ import {
 } from "firebase/firestore";
 import {
   getAuth,
+  signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   signOut,
   onAuthStateChanged,
@@ -132,12 +133,42 @@ const store = createStore({
           console.log(errorMessage);
         });
     },
+    userLogin(context, payload) {
+      signInWithEmailAndPassword(
+        auth,
+        payload.form.email,
+        payload.form.password
+      )
+        .then(async () => {
+          const q = query(
+            collection(db, payload.type),
+            where("email", "==", payload.form.email)
+          );
+
+          const querySnapshot = await getDocs(q);
+          querySnapshot.forEach((doc) => {
+            console.log(doc);
+            context.commit("userData", {
+              type: payload.type,
+              name: doc.data().name,
+              email: doc.data().email,
+              login: true,
+            });
+          });
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          console.log(errorCode);
+          console.log(errorMessage);
+        });
+    },
     userLogout(context) {
       signOut(auth).then(() => {
         context.commit("userData", {
           type: "",
-          name: payload.form.name,
-          email: payload.form.email,
+          name: "",
+          email: "",
           login: false,
         });
       });

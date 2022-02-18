@@ -4,8 +4,10 @@
       <div class="container">
         <div class="columns is-centered">
           <div class="column is-5-tablet is-4-desktop is-4-widescreen">
-            <form action="" class="box">
-              <p class="label has-text-centered is-size-5">تسجيل الدخول كمعمل تحاليل</p>
+            <form @submit.prevent="loginLaboratory" class="box">
+              <p class="label has-text-centered is-size-5">
+                تسجيل الدخول كمعمل تحاليل
+              </p>
               <p class="has-text-centered is-size-6 has-text-danger"></p>
               <br />
               <div class="field">
@@ -14,11 +16,9 @@
                     type="text"
                     placeholder="البريد الإلكترونى"
                     class="input"
+                    v-model="form.email"
                     required
                   />
-                  <span class="icon is-small is-left">
-                    <i class="fa fa-user"></i>
-                  </span>
                 </div>
               </div>
               <div class="field">
@@ -27,22 +27,36 @@
                     type="password"
                     placeholder="كلمه المرور"
                     class="input"
+                    v-model="form.password"
                     required
                   />
-                  <span class="icon is-small is-left">
-                    <i class="fa fa-lock"></i>
-                  </span>
                 </div>
               </div>
               <div class="field">
-                <a class="button is-link is-fullwidth"> تسجيل </a>
+                <progress
+                  class="progress is-small is-primary"
+                  max="100"
+                  v-show="isDisabled"
+                >
+                  15%
+                </progress>
+                <button
+                  type="submit"
+                  class="button is-primary is-fullwidth"
+                  v-show="!isDisabled"
+                >
+                  تسجيل
+                </button>
               </div>
-              <br/>
-            <p class="has-text-centered">                            
-            <router-link class="label has-text-primary" to="doctor-register">
-                عمل حساب معمل تحاليل جديد
-              </router-link >
-            </p> 
+              <br />
+              <p class="has-text-centered">
+                <router-link
+                  class="label has-text-primary"
+                  to="laboratory-register"
+                >
+                  عمل حساب معمل تحاليل جديد
+                </router-link>
+              </p>
             </form>
           </div>
         </div>
@@ -52,7 +66,31 @@
 </template>
 
 <script>
-export default {};
+import { reactive, ref } from "@vue/reactivity";
+import { useRouter } from "vue-router";
+import { useStore } from "vuex";
+export default {
+  setup() {
+    const router = useRouter();
+    const store = useStore();
+    const form = reactive({
+      email: "",
+      password: "",
+    });
+    const isDisabled = ref(false);
+    function loginLaboratory() {
+      isDisabled.value = true;
+      store.dispatch("userLogin", { type: "laboratory", form }).then(() => {
+        setTimeout(() => {
+          form.email = "";
+          form.password = "";
+          router.push("/");
+        }, 1500);
+      });
+    }
+    return { form, loginLaboratory, isDisabled };
+  },
+};
 </script>
 
 <style></style>
