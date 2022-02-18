@@ -1,11 +1,11 @@
 <template>
-  <Navbar v-if="$route.path != '/'"/>
+  <Navbar v-if="$route.path != '/'" />
   <div class="box">
     <div class="wave -one"></div>
     <div class="wave -two"></div>
     <div class="wave -three"></div>
   </div>
-  <router-view />
+    <router-view />
 </template>
 <script>
 import Navbar from "./components/Navbar.vue";

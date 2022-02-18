@@ -84,7 +84,7 @@ export default {
         setTimeout(() => {
           form.email = "";
           form.password = "";
-          router.push("/");
+          router.push("/dashbord");
         }, 1500);
       });
     }

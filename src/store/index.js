@@ -21,7 +21,7 @@ const auth = getAuth();
 const db = getFirestore();
 
 // wait until auth is ready
-const unsub = onAuthStateChanged(auth, async (user) => {
+const unsub = await onAuthStateChanged(auth, async (user) => {
   if (user) {
     const q = query(
       collection(db, "insurances"),
@@ -75,7 +75,6 @@ const unsub = onAuthStateChanged(auth, async (user) => {
   }
   unsub();
 });
-
 const store = createStore({
   state() {
     return {
