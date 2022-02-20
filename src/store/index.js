@@ -3,6 +3,7 @@ import app from "../firebase";
 import { getFirestore } from "firebase/firestore";
 import {
   doc,
+  updateDoc,
   setDoc,
   collection,
   getDocs,
@@ -82,6 +83,8 @@ const store = createStore({
       userType: "",
       userName: "",
       userEmail: "",
+      doctorsReservations: [],
+      laboratory: [],
     };
   },
   mutations: {
@@ -90,6 +93,16 @@ const store = createStore({
       state.userType = payload.type;
       state.userName = payload.name;
       state.userEmail = payload.email;
+    },
+    doctorsReservationsData(state, payload) {
+      if (state.doctorsReservations.includes(payload) === false) {
+        state.doctorsReservations.push(payload);
+      }
+    },
+    laboratoryData(state, payload) {
+      if (state.laboratory.includes(payload) === false) {
+        state.laboratory.push(payload);
+      }
     },
   },
   actions: {
@@ -146,7 +159,6 @@ const store = createStore({
 
           const querySnapshot = await getDocs(q);
           querySnapshot.forEach((doc) => {
-            console.log(doc);
             context.commit("userData", {
               type: payload.type,
               name: doc.data().name,
@@ -170,6 +182,54 @@ const store = createStore({
           email: "",
           login: false,
         });
+      });
+    },
+    async featchDoctorsReservationsData(context) {
+      const q = query(
+        collection(db, "doctorsReservations"),
+        where("doctor", "==", context.state.userEmail),
+        where("states", "==", 1)
+      );
+
+      const querySnapshot = await getDocs(q);
+      querySnapshot.forEach((doc) => {
+        context.commit("doctorsReservationsData", {
+          ...doc.data(),
+          docId: doc.id,
+        });
+      });
+    },
+    async updateReservationsStates(context, payload) {
+      await updateDoc(doc(db, payload.table, payload.docId), {
+        states: payload.states,
+        /**
+        - 0 - before Insurance
+        - 1 - Insurance accsepted
+        - 2 - Insurance refuse
+        - 3 - Doctor accsepted
+        - 4 - Doctor refuse
+        **/
+      });
+    },
+    async laboratoryData(context) {
+      const querySnapshot = await getDocs(collection(db, "laboratory"));
+      querySnapshot.forEach((doc) => {
+        context.commit("laboratoryData", {
+          name: doc.data().name,
+          email: doc.data().email,
+        });
+      });
+    },
+    async addTestRequest(context, payload) {
+      await setDoc(doc(db, "testRequest", payload.doctorEmail), {
+        laboratory: payload.laboratory,
+        doctorName: payload.doctorName,
+        doctorEmail: payload.doctorEmail,
+        userName: payload.userName,
+        userEmail: payload.userEmail,
+        insurance: payload.insurance,
+        testRequest: payload.test,
+        states: 0,
       });
     },
   },

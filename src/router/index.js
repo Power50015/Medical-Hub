@@ -7,6 +7,9 @@ const routes = [
     component: () => import("../views/Home.vue"),
     name: "Home",
     beforeEnter: (to, from) => {
+      if (store.state.isLogin === true) {
+        return router.push({ name: "Dashbord" });
+      }
       const red = setInterval(() => {
         if (store.state.isLogin === true) {
           clearInterval(red);

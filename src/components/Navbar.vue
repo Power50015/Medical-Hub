@@ -22,22 +22,7 @@
       <div class="navbar-start">
         <div class="navbar-item has-dropdown is-hoverable">
           <a class="navbar-link" v-if="$store.state.isLogin"> صفحات </a>
-
           <div class="navbar-dropdown">
-            <router-link
-              class="navbar-item"
-              to="/"
-              v-if="$store.state.userType == 'doctors'"
-            >
-              حجوزات العيادة
-            </router-link>
-            <router-link
-              class="navbar-item"
-              to="/"
-              v-if="$store.state.userType == 'doctors'"
-            >
-              طلب تحليل
-            </router-link>
             <router-link
               class="navbar-item"
               to="/"

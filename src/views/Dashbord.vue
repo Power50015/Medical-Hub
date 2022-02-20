@@ -1,14 +1,12 @@
 <template>
-  <div class="columns is-multiline is-mobile">
-    <div class="column is-one-fifth">
-    </div>
-    <div class="column">Auto</div>
-  </div>
+
+      <DoctorsReservationsTable />
+
 </template>
 
 <script>
-export default {
-};
+import DoctorsReservationsTable from "../components/Doctor/DoctorsReservationsTable.vue";
+export default { components: { DoctorsReservationsTable } };
 </script>
 
 <style></style>
