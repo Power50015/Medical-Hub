@@ -72,7 +72,8 @@
                           <div class="select">
                             <select>
                               <option
-                                v-for="laboratory in $store.state.laboratory" :value="laboratory.name"
+                                v-for="laboratory in $store.state.laboratory"
+                                :value="laboratory.name"
                               >
                                 {{ laboratory.name }}
                               </option>

@@ -6,6 +6,7 @@ import {
   updateDoc,
   setDoc,
   collection,
+  addDoc,
   getDocs,
   query,
   where,
@@ -25,14 +26,14 @@ const db = getFirestore();
 const unsub = await onAuthStateChanged(auth, async (user) => {
   if (user) {
     const q = query(
-      collection(db, "insurances"),
+      collection(db, "insurance"),
       where("email", "==", user.email)
     );
-
     const querySnapshot = await getDocs(q);
+
     if (querySnapshot.empty) {
       const q = query(
-        collection(db, "laboratorys"),
+        collection(db, "laboratory"),
         where("email", "==", user.email)
       );
       const querySnapshot = await getDocs(q);
@@ -42,8 +43,7 @@ const unsub = await onAuthStateChanged(auth, async (user) => {
           where("email", "==", user.email)
         );
         const querySnapshot = await getDocs(q);
-        if (querySnapshot.empty) {
-        } else {
+        if (!querySnapshot.empty) {
           querySnapshot.forEach((doc) => {
             store.commit("userData", {
               type: "doctors",
@@ -55,8 +55,8 @@ const unsub = await onAuthStateChanged(auth, async (user) => {
         }
       } else {
         querySnapshot.forEach((doc) => {
-          store.commit("laboratorys", {
-            type: "doctors",
+          store.commit("userData", {
+            type: "laboratorys",
             name: doc.data().name,
             email: doc.data().email,
             login: true,
@@ -65,8 +65,8 @@ const unsub = await onAuthStateChanged(auth, async (user) => {
       }
     } else {
       querySnapshot.forEach((doc) => {
-        store.commit("insurances", {
-          type: "doctors",
+        store.commit("userData", {
+          type: "insurances",
           name: doc.data().name,
           email: doc.data().email,
           login: true,
@@ -116,8 +116,8 @@ const store = createStore({
           // Signed in
           const user = userCredential.user;
           // Add a new document in collection "cities"
-          setDoc(
-            doc(db, payload.type, payload.form.email),
+          addDoc(
+            collection(db, payload.type),
             payload.type === "doctors"
               ? {
                   name: payload.form.name,
@@ -182,22 +182,40 @@ const store = createStore({
           email: "",
           login: false,
         });
+        context.state.doctorsReservations = [];
+        context.state.laboratory = [];
       });
     },
     async featchDoctorsReservationsData(context) {
-      const q = query(
-        collection(db, "doctorsReservations"),
-        where("doctor", "==", context.state.userEmail),
-        where("states", "==", 1)
-      );
+      if (context.state.userType == "doctor") {
+        const q = query(
+          collection(db, "doctorsReservations"),
+          where("doctor", "==", context.state.userEmail),
+          where("states", "==", 1)
+        );
 
-      const querySnapshot = await getDocs(q);
-      querySnapshot.forEach((doc) => {
-        context.commit("doctorsReservationsData", {
-          ...doc.data(),
-          docId: doc.id,
+        const querySnapshot = await getDocs(q);
+        querySnapshot.forEach((doc) => {
+          context.commit("doctorsReservationsData", {
+            ...doc.data(),
+            docId: doc.id,
+          });
         });
-      });
+      } else {
+        const q = query(
+          collection(db, "doctorsReservations"),
+          where("states", "==", 0)
+        );
+
+        const querySnapshot = await getDocs(q);
+        querySnapshot.forEach((doc) => {
+          context.commit("doctorsReservationsData", {
+            ...doc.data(),
+            docId: doc.id,
+          });
+        });
+
+      }
     },
     async updateReservationsStates(context, payload) {
       await updateDoc(doc(db, payload.table, payload.docId), {
@@ -221,7 +239,7 @@ const store = createStore({
       });
     },
     async addTestRequest(context, payload) {
-      await setDoc(doc(db, "testRequest", payload.doctorEmail), {
+      await addDoc(collection(db, "testRequest"), {
         laboratory: payload.laboratory,
         doctorName: payload.doctorName,
         doctorEmail: payload.doctorEmail,

@@ -30,6 +30,20 @@
             >
               نتائج التحاليل
             </router-link>
+            <router-link
+              class="navbar-item"
+              to="/"
+              v-if="$store.state.userType == 'insurances'"
+            >
+              طلبات التحليل
+            </router-link>
+            <router-link
+              class="navbar-item"
+              to="/"
+              v-if="$store.state.userType == 'insurances'"
+            >
+              طلبات العيادات
+            </router-link>
           </div>
         </div>
       </div>
