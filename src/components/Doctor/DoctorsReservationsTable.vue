@@ -93,7 +93,7 @@
                         class="button is-success"
                         @click="
                           laboratoryReservations(
-                            laboratoryName,
+                            laboratory.name,
                             reservations.userName,
                             reservations.userEmail,
                             $store.state.userName,
@@ -148,8 +148,7 @@ export default {
       showModel.value = false;
       alert("تم تسجيل طلب التحليل");
     }
-    store.dispatch("featchDoctorsReservationsData");
-    store.dispatch("laboratoryData");
+
     return { showModel, testData, laboratoryName, laboratoryReservations };
   },
 };

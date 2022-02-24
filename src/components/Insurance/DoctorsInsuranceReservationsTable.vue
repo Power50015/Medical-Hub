@@ -51,17 +51,6 @@
   </div>
 </template>
 
-<script>
-import { useStore } from "vuex";
-export default {
-  setup() {
-    const store = useStore();
-    store.dispatch("featchDoctorsReservationsData");
-    return { };
-  },
-};
-</script>
-
 <style>
 .section {
   text-align: center;

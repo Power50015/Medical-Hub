@@ -5,12 +5,20 @@
     <div class="wave -two"></div>
     <div class="wave -three"></div>
   </div>
-    <router-view />
+  <router-view />
 </template>
 <script>
+import { useStore } from "vuex";
 import Navbar from "./components/Navbar.vue";
+
 export default {
   components: { Navbar },
+  setup() {
+    const store = useStore();
+    store.dispatch("featchDoctorsReservationsData");
+    store.dispatch("featchTestRequestData");
+    store.dispatch("laboratoryData");
+  },
 };
 </script>
 <style scoped>

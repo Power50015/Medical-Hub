@@ -32,7 +32,7 @@
             </router-link>
             <router-link
               class="navbar-item"
-              to="/"
+              to="/laboratoryinsuranceresrvations"
               v-if="$store.state.userType == 'insurances'"
             >
               طلبات التحليل

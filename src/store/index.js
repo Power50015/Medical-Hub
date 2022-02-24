@@ -85,6 +85,7 @@ const store = createStore({
       userEmail: "",
       doctorsReservations: [],
       laboratory: [],
+      testRequest: [],
     };
   },
   mutations: {
@@ -102,6 +103,11 @@ const store = createStore({
     laboratoryData(state, payload) {
       if (state.laboratory.includes(payload) === false) {
         state.laboratory.push(payload);
+      }
+    },
+    testRequestData(state, payload) {
+      if (state.testRequest.includes(payload) === false) {
+        state.testRequest.push(payload);
       }
     },
   },
@@ -187,7 +193,8 @@ const store = createStore({
       });
     },
     async featchDoctorsReservationsData(context) {
-      if (context.state.userType == "doctor") {
+      context.state.doctorsReservations = [];
+      if (context.state.userType == "doctors") {
         const q = query(
           collection(db, "doctorsReservations"),
           where("doctor", "==", context.state.userEmail),
@@ -214,7 +221,37 @@ const store = createStore({
             docId: doc.id,
           });
         });
+      }
+    },
+    async featchTestRequestData(context) {
+      context.state.testRequest = [];
+      if (context.state.userType == "laboratorys") {
+        const q = query(
+          collection(db, "testRequest"),
+          where("laboratory", "==", context.state.userName),
+          where("states", "==", 1)
+        );
 
+        const querySnapshot = await getDocs(q);
+        querySnapshot.forEach((doc) => {
+          context.commit("testRequestData", {
+            ...doc.data(),
+            docId: doc.id,
+          });
+        });
+      } else {
+        const q = query(
+          collection(db, "testRequest"),
+          where("states", "==", 0)
+        );
+
+        const querySnapshot = await getDocs(q);
+        querySnapshot.forEach((doc) => {
+          context.commit("testRequestData", {
+            ...doc.data(),
+            docId: doc.id,
+          });
+        });
       }
     },
     async updateReservationsStates(context, payload) {
@@ -228,8 +265,12 @@ const store = createStore({
         - 4 - Doctor refuse
         **/
       });
+      context.dispatch('featchDoctorsReservationsData');
+      context.dispatch('featchTestRequestData');
+      context.dispatch('laboratoryData');
     },
     async laboratoryData(context) {
+      context.state.laboratory = [];
       const querySnapshot = await getDocs(collection(db, "laboratory"));
       querySnapshot.forEach((doc) => {
         context.commit("laboratoryData", {
