@@ -18,7 +18,7 @@
                 <td>
                   <button
                     class="button is-primary"
-                    @click="showModel = !showModel"
+                    @click="showModel = testRequest.docId"
                   >
                     حجز معمل تحاليل
                   </button>
@@ -51,10 +51,10 @@
                     إلغاءالحجز
                   </button>
                 </td>
-                <div class="modal" v-if="showModel">
+                <div class="modal" v-if="showModel == testRequest.docId">
                   <div
                     class="modal-background"
-                    @click="showModel = fasle"
+                    @click="showModel = ''"
                   ></div>
                   <div class="modal-card">
                     <header class="modal-card-head">
@@ -62,7 +62,7 @@
                       <button
                         class="delete"
                         aria-label="close"
-                        @click="showModel = fasle"
+                        @click="showModel = ''"
                       ></button>
                     </header>
                     <section class="modal-card-body">
@@ -104,7 +104,7 @@
                       >
                         إرسال للمعمل
                       </button>
-                      <button class="button" @click="showModel = fasle">
+                      <button class="button" @click="showModel = ''">
                         إلغاء
                       </button>
                     </footer>
@@ -164,5 +164,8 @@ textarea {
 }
 .modal {
   display: flex;
+}
+.modal-background {
+    background-color: rgb(10 10 10 / 25%);
 }
 </style>

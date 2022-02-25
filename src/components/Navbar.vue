@@ -20,32 +20,27 @@
 
     <div id="navbarBasicExample" class="navbar-menu">
       <div class="navbar-start">
-        <div class="navbar-item has-dropdown is-hoverable">
-          <a class="navbar-link" v-if="$store.state.isLogin"> صفحات </a>
-          <div class="navbar-dropdown">
-            <router-link
-              class="navbar-item"
-              to="/"
-              v-if="$store.state.userType == 'doctors'"
-            >
-              نتائج التحاليل
-            </router-link>
-            <router-link
-              class="navbar-item"
-              to="/laboratoryinsuranceresrvations"
-              v-if="$store.state.userType == 'insurances'"
-            >
-              طلبات التحليل
-            </router-link>
-            <router-link
-              class="navbar-item"
-              to="/"
-              v-if="$store.state.userType == 'insurances'"
-            >
-              طلبات العيادات
-            </router-link>
-          </div>
-        </div>
+        <router-link
+          class="navbar-item"
+          to="/"
+          v-if="$store.state.userType == 'doctors'"
+        >
+          نتائج التحاليل
+        </router-link>
+        <router-link
+          class="navbar-item"
+          to="/laboratoryinsuranceresrvations"
+          v-if="$store.state.userType == 'insurances'"
+        >
+          طلبات التحليل
+        </router-link>
+        <router-link
+          class="navbar-item"
+          to="/"
+          v-if="$store.state.userType == 'insurances'"
+        >
+          طلبات العيادات
+        </router-link>
       </div>
 
       <div class="navbar-end">

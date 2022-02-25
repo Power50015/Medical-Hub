@@ -202,6 +202,7 @@ const store = createStore({
         );
 
         const querySnapshot = await getDocs(q);
+        
         querySnapshot.forEach((doc) => {
           context.commit("doctorsReservationsData", {
             ...doc.data(),
@@ -291,6 +292,18 @@ const store = createStore({
         states: 0,
       });
     },
+    async testResult(context, payload){
+      await addDoc(collection(db, "testResult"), {
+        laboratory: payload.laboratory,
+        doctorName: payload.doctorName,
+        doctorEmail: payload.doctorEmail,
+        userName: payload.userName,
+        userEmail: payload.userEmail,
+        insurance: payload.insurance,
+        testResult: payload.testResult,
+        testRequest:payload.testRequest,
+      });
+    }
   },
 });
 export default store;

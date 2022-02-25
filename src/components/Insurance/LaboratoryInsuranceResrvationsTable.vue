@@ -68,4 +68,7 @@ textarea {
 .modal {
   display: flex;
 }
+.modal-background {
+    background-color: rgb(10 10 10 / 25%);
+}
 </style>

@@ -15,9 +15,11 @@ export default {
   components: { Navbar },
   setup() {
     const store = useStore();
-    store.dispatch("featchDoctorsReservationsData");
-    store.dispatch("featchTestRequestData");
-    store.dispatch("laboratoryData");
+    setTimeout(() => {
+      store.dispatch("featchDoctorsReservationsData");
+      store.dispatch("featchTestRequestData");
+      store.dispatch("laboratoryData");
+    }, 2000);
   },
 };
 </script>
