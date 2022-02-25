@@ -113,7 +113,7 @@ export default {
       testRequest,
       docId
     ) {
-      store.dispatch("testResult", {
+      store.dispatch("addTestResult", {
         laboratory: laboratory,
         doctorName: doctorName,
         doctorEmail: doctorEmail,

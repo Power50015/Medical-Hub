@@ -126,6 +126,21 @@ const routes = [
     },
     
   },
+  {
+    path: "/testResults",
+    name: "TestResults",
+    component: () => import("../views/TestResults.vue"),
+    beforeEnter: (to, from) => {
+      const red = setInterval(() => {
+        if (store.state.isLogin === false) {
+          clearInterval(red);
+          return router.push({ name: "Home" });
+        }
+      }, 300);
+      return true;
+    },
+    
+  },
 ];
 
 const router = createRouter({

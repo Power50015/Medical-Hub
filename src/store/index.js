@@ -86,6 +86,7 @@ const store = createStore({
       doctorsReservations: [],
       laboratory: [],
       testRequest: [],
+      testResult: [],
     };
   },
   mutations: {
@@ -108,6 +109,11 @@ const store = createStore({
     testRequestData(state, payload) {
       if (state.testRequest.includes(payload) === false) {
         state.testRequest.push(payload);
+      }
+    },
+    testResultData(state, payload) {
+      if (state.testResult.includes(payload) === false) {
+        state.testResult.push(payload);
       }
     },
   },
@@ -202,7 +208,7 @@ const store = createStore({
         );
 
         const querySnapshot = await getDocs(q);
-        
+
         querySnapshot.forEach((doc) => {
           context.commit("doctorsReservationsData", {
             ...doc.data(),
@@ -266,9 +272,9 @@ const store = createStore({
         - 4 - Doctor refuse
         **/
       });
-      context.dispatch('featchDoctorsReservationsData');
-      context.dispatch('featchTestRequestData');
-      context.dispatch('laboratoryData');
+      context.dispatch("featchDoctorsReservationsData");
+      context.dispatch("featchTestRequestData");
+      context.dispatch("laboratoryData");
     },
     async laboratoryData(context) {
       context.state.laboratory = [];
@@ -292,7 +298,7 @@ const store = createStore({
         states: 0,
       });
     },
-    async testResult(context, payload){
+    async addTestResult(context, payload) {
       await addDoc(collection(db, "testResult"), {
         laboratory: payload.laboratory,
         doctorName: payload.doctorName,
@@ -301,9 +307,26 @@ const store = createStore({
         userEmail: payload.userEmail,
         insurance: payload.insurance,
         testResult: payload.testResult,
-        testRequest:payload.testRequest,
+        testRequest: payload.testRequest,
       });
-    }
+    },
+    async featchTestResult(context) {
+      context.state.testResult = [];
+
+      const q = query(
+        collection(db, "testResult"),
+        where("doctorEmail", "==", context.state.userEmail)
+      );
+
+      const querySnapshot = await getDocs(q);
+
+      querySnapshot.forEach((doc) => {
+        context.commit("testResultData", {
+          ...doc.data(),
+          docId: doc.id,
+        });
+      });
+    },
   },
 });
 export default store;

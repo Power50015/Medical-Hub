@@ -19,6 +19,7 @@ export default {
       store.dispatch("featchDoctorsReservationsData");
       store.dispatch("featchTestRequestData");
       store.dispatch("laboratoryData");
+      store.dispatch("featchTestResult");
     }, 2000);
   },
 };

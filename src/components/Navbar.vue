@@ -22,7 +22,7 @@
       <div class="navbar-start">
         <router-link
           class="navbar-item"
-          to="/"
+          to="/testResults"
           v-if="$store.state.userType == 'doctors'"
         >
           نتائج التحاليل

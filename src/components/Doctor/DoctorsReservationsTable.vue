@@ -51,7 +51,7 @@
                     إلغاءالحجز
                   </button>
                 </td>
-                <div class="modal" v-if="showModel == testRequest.docId">
+                <div class="modal" v-if="showModel == reservations.docId">
                   <div
                     class="modal-background"
                     @click="showModel = ''"
