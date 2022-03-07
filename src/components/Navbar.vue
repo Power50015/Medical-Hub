@@ -22,6 +22,13 @@
       <div class="navbar-start">
         <router-link
           class="navbar-item"
+          to="/profile"
+          v-if="$store.state.userType == 'doctors'"
+        >
+          الصفحه الشخصيه
+        </router-link>
+        <router-link
+          class="navbar-item"
           to="/testResults"
           v-if="$store.state.userType == 'doctors'"
         >

@@ -112,6 +112,20 @@ const routes = [
     },
   },
   {
+    path: "/profile",
+    name: "Profile",
+    component: () => import("../views/Profile.vue"),
+    beforeEnter: (to, from) => {
+      const red = setInterval(() => {
+        if (store.state.isLogin === false) {
+          clearInterval(red);
+          return router.push({ name: "Home" });
+        }
+      }, 300);
+      return true;
+    },
+  },
+  {
     path: "/laboratoryinsuranceresrvations",
     name: "LaboratoryInsuranceResrvations",
     component: () => import("../views/LaboratoryInsuranceResrvations.vue"),

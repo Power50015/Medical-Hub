@@ -47,8 +47,11 @@ const unsub = await onAuthStateChanged(auth, async (user) => {
           querySnapshot.forEach((doc) => {
             store.commit("userData", {
               type: "doctors",
+              docId: doc.id,
               name: doc.data().name,
               email: doc.data().email,
+              address: doc.data().address,
+              prof: doc.data().prof,
               login: true,
             });
           });
@@ -57,6 +60,7 @@ const unsub = await onAuthStateChanged(auth, async (user) => {
         querySnapshot.forEach((doc) => {
           store.commit("userData", {
             type: "laboratorys",
+            docId: doc.id,
             name: doc.data().name,
             email: doc.data().email,
             login: true,
@@ -67,6 +71,7 @@ const unsub = await onAuthStateChanged(auth, async (user) => {
       querySnapshot.forEach((doc) => {
         store.commit("userData", {
           type: "insurances",
+          docId: doc.id,
           name: doc.data().name,
           email: doc.data().email,
           login: true,
@@ -80,9 +85,12 @@ const store = createStore({
   state() {
     return {
       isLogin: false,
+      docId: "",
       userType: "",
       userName: "",
       userEmail: "",
+      userAddress: "",
+      userProf: "",
       doctorsReservations: [],
       laboratory: [],
       testRequest: [],
@@ -92,9 +100,14 @@ const store = createStore({
   mutations: {
     userData(state, payload) {
       state.isLogin = payload.login;
+      state.docId = payload.docId;
       state.userType = payload.type;
       state.userName = payload.name;
       state.userEmail = payload.email;
+      if (payload.type === "doctors") {
+        state.userAddress = payload.address;
+        state.userProf = payload.prof;
+      }
     },
     doctorsReservationsData(state, payload) {
       if (state.doctorsReservations.includes(payload) === false) {
@@ -146,8 +159,11 @@ const store = createStore({
               type: payload.type,
               name: payload.form.name,
               email: payload.form.email,
+              address: payload.form.address,
+              prof: payload.form.prof,
               login: true,
             });
+            unsub();
           });
         })
         .catch((error) => {
@@ -165,19 +181,75 @@ const store = createStore({
       )
         .then(async () => {
           const q = query(
-            collection(db, payload.type),
+            collection(db, "insurance"),
             where("email", "==", payload.form.email)
           );
-
           const querySnapshot = await getDocs(q);
-          querySnapshot.forEach((doc) => {
-            context.commit("userData", {
-              type: payload.type,
-              name: doc.data().name,
-              email: doc.data().email,
-              login: true,
+
+          if (querySnapshot.empty) {
+            const q = query(
+              collection(db, "laboratory"),
+              where("email", "==", payload.form.email)
+            );
+            const querySnapshot = await getDocs(q);
+            if (querySnapshot.empty) {
+              const q = query(
+                collection(db, "doctors"),
+                where("email", "==", payload.form.email)
+              );
+              const querySnapshot = await getDocs(q);
+              if (!querySnapshot.empty) {
+                querySnapshot.forEach((doc) => {
+                  context.commit("userData", {
+                    type: "doctors",
+                    docId: doc.id,
+                    name: doc.data().name,
+                    email: doc.data().email,
+                    address: doc.data().address,
+                    prof: doc.data().prof,
+                    login: true,
+                  });
+                });
+              }
+            } else {
+              querySnapshot.forEach((doc) => {
+                context.commit("userData", {
+                  type: "laboratorys",
+                  docId: doc.id,
+                  name: doc.data().name,
+                  email: doc.data().email,
+                  login: true,
+                });
+              });
+            }
+          } else {
+            querySnapshot.forEach((doc) => {
+              context.commit("userData", {
+                type: "insurances",
+                docId: doc.id,
+                name: doc.data().name,
+                email: doc.data().email,
+                login: true,
+              });
             });
-          });
+          }
+          context.dispatch("featchDoctorsReservationsData");
+          context.dispatch("featchTestRequestData");
+          context.dispatch("laboratoryData");
+          // const q = query(
+          //   collection(db, payload.type),
+          //   where("email", "==", payload.form.email)
+          // );
+
+          // const querySnapshot = await getDocs(q);
+          // querySnapshot.forEach((doc) => {
+          //   context.commit("userData", {
+          //     type: payload.type,
+          //     name: doc.data().name,
+          //     email: doc.data().email,
+          //     login: true,
+          //   });
+          // });
         })
         .catch((error) => {
           const errorCode = error.code;
@@ -185,6 +257,22 @@ const store = createStore({
           console.log(errorCode);
           console.log(errorMessage);
         });
+    },
+    async updateUserData(context, payload) {
+      if (context.state.userType == "doctors") {
+        await updateDoc(doc(db, context.state.userType, context.state.docId), {
+          name: payload.name,
+          address: payload.address,
+          prof: payload.prof,
+        });
+      } else {
+        await updateDoc(doc(db, context.state.userType, context.state.docId), {
+          name: payload.name,
+        });
+      }
+      context.state.userName = payload.name;
+      context.state.userAddress = payload.address;
+      context.state.userProf = payload.prof;
     },
     userLogout(context) {
       signOut(auth).then(() => {
