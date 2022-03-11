@@ -1,5 +1,15 @@
 <template>
-  <nav class="navbar container" role="navigation" aria-label="main navigation">
+  <nav class="is-flex is-justify-content-space-between py-4 px-3">
+    <div class="navbar-item">
+      <div class="buttons" v-show="$store.state.isLogin">
+        <button class="menu-button" @click="$emit('asideEvent')">
+          <img
+            src="https://www.projectscreen.co.uk/assets/burger_black.png"
+            width="25"
+          />
+        </button>
+      </div>
+    </div>
     <div class="navbar-brand">
       <router-link class="navbar-item" to="/">
         <img src="../assets/logo.png" width="100" />
@@ -17,50 +27,14 @@
         <span aria-hidden="true"></span>
       </a>
     </div>
-
-    <div id="navbarBasicExample" class="navbar-menu">
-      <div class="navbar-start">
-        <router-link
-          class="navbar-item"
-          to="/profile"
-          v-if="$store.state.userType == 'doctors'"
+    <div class="navbar-item">
+      <div class="buttons" v-show="$store.state.isLogin">
+        <button
+          class="button is-primary"
+          @click="$store.dispatch('userLogout')"
         >
-          الصفحه الشخصيه
-        </router-link>
-        <router-link
-          class="navbar-item"
-          to="/testResults"
-          v-if="$store.state.userType == 'doctors'"
-        >
-          نتائج التحاليل
-        </router-link>
-        <router-link
-          class="navbar-item"
-          to="/laboratoryinsuranceresrvations"
-          v-if="$store.state.userType == 'insurances'"
-        >
-          طلبات التحليل
-        </router-link>
-        <router-link
-          class="navbar-item"
-          to="/"
-          v-if="$store.state.userType == 'insurances'"
-        >
-          طلبات العيادات
-        </router-link>
-      </div>
-
-      <div class="navbar-end">
-        <div class="navbar-item">
-          <div class="buttons" v-show="$store.state.isLogin">
-            <button
-              class="button is-light"
-              @click="$store.dispatch('userLogout')"
-            >
-              تسجيل خروج
-            </button>
-          </div>
-        </div>
+          تسجيل خروج
+        </button>
       </div>
     </div>
   </nav>
@@ -70,15 +44,16 @@
 export default {};
 </script>
 
-<style>
-.navbar {
-  background: none;
-  display: flex;
-  justify-content: space-between;
+<style scoped>
+nav {
+  background-color: #fff;
+  width: 100%;
+  height: 75px;
 }
-.navbar-menu {
-  display: flex;
+.menu-button {
+  border: none;
   background: none;
-  box-shadow: none;
+  padding: 0;
+  cursor: pointer;
 }
 </style>

@@ -4,3 +4,5 @@ dist
 dist-ssr
 *.local
 .env
+src/components/ss
+Medical-Hub.zip

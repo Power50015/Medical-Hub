@@ -1,0 +1,19 @@
+.is-primary {
+  background-color: #9e44f9 !important;
+  color: #eee !important;
+}
+.has-text-primary,
+.has-text-link {
+  color: #9e44f9 !important;
+}
+a.has-text-primary:hover,
+a.has-text-link:hover {
+  color: #8314f3 !important;
+}
+html{
+  height: 100%;
+}
+body{
+  background-color: #eee;
+  height: 100%;
+}

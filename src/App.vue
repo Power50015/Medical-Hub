@@ -1,30 +1,44 @@
 <template>
-  <Navbar v-if="$route.path != '/'" />
   <div class="box">
     <div class="wave -one"></div>
     <div class="wave -two"></div>
     <div class="wave -three"></div>
   </div>
-  <router-view />
+  <div class="is-flex">
+    <Aside v-if="$route.path != '/'" />
+    <div class="view">
+      <Navbar v-if="$route.path != '/'"  @aside-event="showAsideBtn"/>
+      <router-view />
+    </div>
+  </div>
 </template>
-<script>
+<script setup>
 import { useStore } from "vuex";
 import Navbar from "./components/Navbar.vue";
+import Aside from "./components/Aside.vue";
+import { provide, ref } from "@vue/runtime-core";
 
-export default {
-  components: { Navbar },
-  setup() {
-    const store = useStore();
-    setTimeout(() => {
-      store.dispatch("featchDoctorsReservationsData");
-      store.dispatch("featchTestRequestData");
-      store.dispatch("laboratoryData");
-      store.dispatch("featchTestResult");
-    }, 2000);
-  },
-};
+const store = useStore();
+setTimeout(() => {
+  store.dispatch("featchDoctorsReservationsData");
+  store.dispatch("featchTestRequestData");
+  store.dispatch("laboratoryData");
+  store.dispatch("featchTestResult");
+}, 2000);
+
+const showAside = ref(true);
+
+provide("aside", showAside);
+
+function showAsideBtn() {
+  showAside.value = !showAside.value;
+}
 </script>
 <style scoped>
+.view {
+  width: 100%;
+}
+
 /*waves****************************/
 .box {
   position: fixed;
@@ -41,7 +55,7 @@ export default {
   position: absolute;
   top: 3%;
   left: 10%;
-  background: #0af;
+  background: #7d36c4;
   width: 1500px;
   height: 1300px;
   margin-left: -150px;
@@ -54,7 +68,7 @@ export default {
 .wave.-three {
   animation: drift 7500ms infinite linear;
   position: fixed;
-  background-color: #77daff;
+  background-color: #563379;
 }
 
 .wave.-two {
@@ -106,9 +120,9 @@ export default {
   -ms-flex-align: center;
   align-items: center;
 
-  background: #25a7d7;
-  background: -webkit-linear-gradient(#25a7d7, #2962ff);
-  background: linear-gradient(#25a7d7, #25a7d7);
+  background: #31025f;
+  background: -webkit-linear-gradient(#31025f, #5c1b9c);
+  background: linear-gradient(#31025f, #31025f);
 }
 
 .icon {

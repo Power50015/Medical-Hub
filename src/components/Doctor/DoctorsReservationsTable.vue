@@ -18,7 +18,7 @@
                 <td>
                   <button
                     class="button is-primary"
-                    @click="showModel = testRequest.docId"
+                    @click="showModel = reservations.docId"
                   >
                     حجز معمل تحاليل
                   </button>
@@ -67,10 +67,10 @@
                     </header>
                     <section class="modal-card-body">
                       <div class="field">
-                        <label class="label">Subject</label>
+                        <label class="label">أسم معمل التحاليل</label>
                         <div class="control">
                           <div class="select">
-                            <select>
+                            <select v-model="laboratoryName">
                               <option
                                 v-for="laboratory in $store.state.laboratory"
                                 :value="laboratory.name"
@@ -90,10 +90,10 @@
                     </section>
                     <footer class="modal-card-foot">
                       <button
-                        class="button is-success"
+                        class="button is-primary"
                         @click="
                           laboratoryReservations(
-                            laboratory.name,
+                            laboratoryName,
                             reservations.userName,
                             reservations.userEmail,
                             $store.state.userName,
@@ -127,7 +127,7 @@ export default {
     const store = useStore();
     const showModel = ref(false);
     const testData = ref("");
-    const laboratoryName = ref("222");
+    const laboratoryName = ref("");
     function laboratoryReservations(
       laboratory,
       userName,
@@ -167,5 +167,12 @@ textarea {
 }
 .modal-background {
     background-color: rgb(10 10 10 / 25%);
+}
+th{
+  background-color: #343b42;
+  color: #fff !important;
+}
+td{
+  background-color: #e1e2e6;
 }
 </style>
