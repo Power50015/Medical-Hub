@@ -1,19 +1,41 @@
 .is-primary {
-  background-color: #9e44f9 !important;
+  background-color: #3b740a !important;
   color: #eee !important;
 }
 .has-text-primary,
 .has-text-link {
-  color: #9e44f9 !important;
+  color: #5cbd07 !important;
 }
 a.has-text-primary:hover,
-a.has-text-link:hover {
-  color: #8314f3 !important;
+a.has-text-link:hover,
+.link:hover {
+  color: #4c970a !important;
+  transition: all 0.3s;
 }
-html{
+html {
   height: 100%;
 }
-body{
+body {
   background-color: #eee;
   height: 100%;
+}
+.view {
+  width: 100%;
+}
+
+/*waves****************************/
+.wave {
+  background: #76ad45;
+}
+
+.wave.-three {
+  background-color: #406123;
+}
+
+/*LOADING SPACE*/
+
+.contain {
+  background: #78995b;
+  background: -webkit-linear-gradient(#025f19, #1b9c4c);
+  background: linear-gradient(#025f19, #1b9c4c);
 }

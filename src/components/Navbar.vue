@@ -11,7 +11,7 @@
       </div>
     </div>
     <div class="navbar-brand">
-      <router-link class="navbar-item" to="/">
+      <router-link to="/">
         <img src="../assets/logo.png" width="100" />
       </router-link>
 

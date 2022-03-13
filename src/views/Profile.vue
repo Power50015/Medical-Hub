@@ -28,6 +28,45 @@
                 />
               </div>
             </div>
+            <div class="field">
+              <div class="control has-icons-left">
+                <input
+                  type="text"
+                  placeholder="الأسم بالكامل"
+                  class="input"
+                  required
+                  v-model="fullName"
+                />
+              </div>
+            </div>
+            <div class="field">
+              <div class="control has-icons-left">
+                <input
+                  type="text"
+                  placeholder="رقم الهاتف"
+                  class="input"
+                  required
+                  v-model="userPhone"
+                />
+              </div>
+            </div>
+            <div class="field">
+              <h6>تاريخ الميلاد</h6>
+              <div class="control has-icons-left">
+                <input
+                  type="date"
+                  class="input"
+                  required
+                  v-model="birthday"
+                  min="1950-01-01"
+                  max="2000-12-31"
+                />
+              </div>
+              <div>
+                <span>العمر : </span>
+                <span>{{ isNaN(age) ? "" : age + " سنه " }}</span>
+              </div>
+            </div>
             <div class="field" v-if="$store.state.userType == 'doctors'">
               <div class="control has-icons-left">
                 <input
@@ -37,6 +76,14 @@
                   class="input"
                   required
                 />
+              </div>
+            </div>
+            <div class="field">
+              <div class="control has-icons-left">
+                <select v-model="gender" class="input" required>
+                  <option value="ذكر">ذكر</option>
+                  <option value="أنثى">أنثى</option>
+                </select>
               </div>
             </div>
             <div class="field" v-if="$store.state.userType == 'doctors'">
@@ -74,21 +121,40 @@
 
 <script setup>
 import { ref } from "@vue/reactivity";
+import { computed } from "@vue/runtime-core";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 const router = useRouter();
 const store = useStore();
 const name = ref(store.state.userName);
+const fullName = ref(store.state.userFullName);
+const userPhone = ref(store.state.userPhone);
+const birthday = ref(store.state.userBirthday);
+const gender = ref(store.state.userGender);
 const address = ref(store.state.userAddress);
 const prof = ref(store.state.userProf);
 
+const age = computed(() => {
+  var today = new Date();
+  var birthDate = new Date(birthday.value);
+  var age = today.getFullYear() - birthDate.getFullYear();
+  var m = today.getMonth() - birthDate.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+    age--;
+  }
+  return age;
+});
 const isDisabled = ref(false);
 function updateUserData() {
   isDisabled.value = true;
   store
     .dispatch("updateUserData", {
       name: name.value,
+      fullName: fullName.value,
       address: address.value,
+      phone:userPhone.value,
+      birthday:birthday.value,
+      gender:gender.value,
       prof: prof.value,
     })
     .then(() => {

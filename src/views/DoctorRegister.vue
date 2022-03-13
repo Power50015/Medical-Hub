@@ -24,12 +24,59 @@
               <div class="field">
                 <div class="control has-icons-left">
                   <input
+                    type="text"
+                    placeholder="الأسم بالكامل"
+                    class="input"
+                    required
+                    v-model="form.fullname"
+                  />
+                </div>
+              </div>
+              <div class="field">
+                <div class="control has-icons-left">
+                  <input
                     type="email"
                     placeholder="البريد الإلكترونى"
                     class="input"
                     required
                     v-model="form.email"
                   />
+                </div>
+              </div>
+              <div class="field">
+                <div class="control has-icons-left">
+                  <input
+                    type="text"
+                    placeholder="رقم الهاتف"
+                    class="input"
+                    required
+                    v-model="form.phone"
+                  />
+                </div>
+              </div>
+              <div class="field">
+                <h6>تاريخ الميلاد</h6>
+                <div class="control has-icons-left">
+                  <input
+                    type="date"
+                    class="input"
+                    required
+                    v-model="form.birthday"
+                    min="1950-01-01"
+                    max="2000-12-31"
+                  />
+                </div>
+                <div>
+                  <span>العمر : </span>
+                  <span>{{ isNaN(age) ? "" : age + " سنه " }}</span>
+                </div>
+              </div>
+              <div class="field">
+                <div class="control has-icons-left">
+                  <select v-model="form.gender" class="input" required>
+                    <option value="ذكر">ذكر</option>
+                    <option value="أنثى">أنثى</option>
+                  </select>
                 </div>
               </div>
               <div class="field">
@@ -94,39 +141,53 @@
   </section>
 </template>
 
-<script>
+<script setup>
 import { reactive, ref } from "@vue/reactivity";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
+import { computed } from "@vue/runtime-core";
 
-export default {
-  setup() {
-    const router = useRouter();
-    const store = useStore();
-    const form = reactive({
-      name: "",
-      email: "",
-      password: "",
-      address: "",
-      prof: "باطنه",
-    });
-    const isDisabled = ref(false);
-    function saveDoctor() {
-      isDisabled.value = true;
-      store.dispatch("userRegister", { type: "doctors", form }).then(() => {
-        setTimeout(() => {
-          form.name = "";
-          form.email = "";
-          form.password = "";
-          form.address = "";
-          form.prof = "";
-          router.push('/');
-        }, 3000);
-      });
-    }
-    return { form, saveDoctor, isDisabled };
-  },
-};
+const router = useRouter();
+const store = useStore();
+const form = reactive({
+  name: "",
+  fullname: "",
+  email: "",
+  phone: "",
+  gender: "ذكر",
+  password: "",
+  address: "",
+  birthday: "1990-01-01",
+  prof: "باطنه",
+});
+const age = computed(() => {
+  var today = new Date();
+  var birthDate = new Date(form.birthday);
+  var age = today.getFullYear() - birthDate.getFullYear();
+  var m = today.getMonth() - birthDate.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+    age--;
+  }
+  return age;
+});
+const isDisabled = ref(false);
+function saveDoctor() {
+  isDisabled.value = true;
+  store.dispatch("userRegister", { type: "doctors", form }).then(() => {
+    setTimeout(() => {
+      form.name = "";
+      form.fullname = "";
+      form.email = "";
+      form.phone = "";
+      form.gender = "";
+      form.password = "";
+      form.address = "";
+      form.birthday = "";
+      form.prof = "";
+      router.push("/");
+    }, 3000);
+  });
+}
 </script>
 
 <style></style>

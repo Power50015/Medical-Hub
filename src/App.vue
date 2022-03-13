@@ -55,7 +55,6 @@ function showAsideBtn() {
   position: absolute;
   top: 3%;
   left: 10%;
-  background: #7d36c4;
   width: 1500px;
   height: 1300px;
   margin-left: -150px;
@@ -68,7 +67,6 @@ function showAsideBtn() {
 .wave.-three {
   animation: drift 7500ms infinite linear;
   position: fixed;
-  background-color: #563379;
 }
 
 .wave.-two {
@@ -119,10 +117,6 @@ function showAsideBtn() {
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-
-  background: #31025f;
-  background: -webkit-linear-gradient(#31025f, #5c1b9c);
-  background: linear-gradient(#31025f, #31025f);
 }
 
 .icon {

@@ -49,9 +49,13 @@ const unsub = await onAuthStateChanged(auth, async (user) => {
               type: "doctors",
               docId: doc.id,
               name: doc.data().name,
+              fullname: doc.data().fullname,
               email: doc.data().email,
               address: doc.data().address,
               prof: doc.data().prof,
+              birthday: doc.data().birthday,
+              gender: doc.data().gender,
+              phone: doc.data().phone,
               login: true,
             });
           });
@@ -88,6 +92,10 @@ const store = createStore({
       docId: "",
       userType: "",
       userName: "",
+      userFullName: "",
+      userPhone: "",
+      userGender: "",
+      userBirthday: "",
       userEmail: "",
       userAddress: "",
       userProf: "",
@@ -107,6 +115,10 @@ const store = createStore({
       if (payload.type === "doctors") {
         state.userAddress = payload.address;
         state.userProf = payload.prof;
+        state.userFullName = payload.fullname;
+        state.userPhone = payload.phone;
+        state.userGender = payload.gender;
+        state.userBirthday = payload.birthday;
       }
     },
     doctorsReservationsData(state, payload) {
@@ -149,6 +161,10 @@ const store = createStore({
                   email: payload.form.email,
                   address: payload.form.address,
                   prof: payload.form.prof,
+                  fullname: payload.form.fullname,
+                  phone: payload.form.phone,
+                  gender: payload.form.gender,
+                  birthday: payload.form.birthday,
                 }
               : {
                   name: payload.form.name,
@@ -161,6 +177,10 @@ const store = createStore({
               email: payload.form.email,
               address: payload.form.address,
               prof: payload.form.prof,
+              fullname: payload.form.fullname,
+              phone: payload.form.phone,
+              gender: payload.form.gender,
+              birthday: payload.form.birthday,
               login: true,
             });
             unsub();
@@ -204,9 +224,13 @@ const store = createStore({
                     type: "doctors",
                     docId: doc.id,
                     name: doc.data().name,
+                    fullname: doc.data().fullname,
                     email: doc.data().email,
                     address: doc.data().address,
                     prof: doc.data().prof,
+                    birthday: doc.data().birthday,
+                    gender: doc.data().gender,
+                    phone: doc.data().phone,
                     login: true,
                   });
                 });
@@ -262,8 +286,12 @@ const store = createStore({
       if (context.state.userType == "doctors") {
         await updateDoc(doc(db, context.state.userType, context.state.docId), {
           name: payload.name,
+          fullname: payload.fullName,
           address: payload.address,
           prof: payload.prof,
+          phone: payload.phone,
+          gender: payload.gender,
+          birthday: payload.birthday,
         });
       } else {
         await updateDoc(doc(db, context.state.userType, context.state.docId), {
@@ -271,8 +299,12 @@ const store = createStore({
         });
       }
       context.state.userName = payload.name;
+      context.state.userFullName = payload.fullName;
       context.state.userAddress = payload.address;
       context.state.userProf = payload.prof;
+      context.state.userPhone = payload.phone;
+      context.state.userGender = payload.gender;
+      context.state.userBirthday = payload.birthday;
     },
     userLogout(context) {
       signOut(auth).then(() => {

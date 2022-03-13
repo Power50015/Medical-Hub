@@ -11,7 +11,7 @@
           class="link"
         >
           <img
-            src="https://cdn-icons.flaticon.com/png/512/1144/premium/1144709.png?token=exp=1646991162~hmac=7c4f43efb0f55f7ebc2b8497e4af18b2"
+            src="../assets/user.png"
             width="25"
           />
           الصفحه الشخصيه</router-link
@@ -24,7 +24,7 @@
           class="link"
         >
           <img
-            src="https://cdn-icons.flaticon.com/png/512/3369/premium/3369157.png?token=exp=1646991823~hmac=3bce3b400ae97df5bcdf9eb4c05db174"
+            src="../assets/1988856.png"
             width="25"
           />
           حجوزات المرضى</router-link
@@ -37,7 +37,7 @@
           class="link"
         >
           <img
-            src="https://cdn-icons.flaticon.com/png/512/2196/premium/2196227.png?token=exp=1646991118~hmac=829dd0f1f7ae8d8ed3a66b350ee7c937"
+            src="../assets/4068568.png"
             width="25"
           />
           نتائج التحاليل
@@ -86,9 +86,9 @@ aside {
   height: 100vh;
 }
 .logo {
-  background-color: #7d36c4;
-  height: 75px;
+  /* height: 75px; */
   padding: 10px;
+  width: 235px;
 }
 .logo img {
   width: 100%;
@@ -109,9 +109,7 @@ ul {
   transition: all 0.3s;
 }
 .link:hover {
-  background-color: #7d36c4;
   color: #fff;
-  transition: all 0.3s;
 }
 .link img {
   margin: 0px 0px 0px 20px;
