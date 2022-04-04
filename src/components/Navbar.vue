@@ -21,11 +21,56 @@
         aria-label="menu"
         aria-expanded="false"
         data-target="navbarBasicExample"
+        v-if="$store.state.isLogin"
+        @click="nav = !nav"
       >
         <span aria-hidden="true"></span>
         <span aria-hidden="true"></span>
         <span aria-hidden="true"></span>
       </a>
+    </div>
+
+    <div id="navbarBasicExample" class="navbar-menu" v-if="nav">
+      <div class="navbar-start">
+        <router-link to="/profile" class="navbar-item"           v-if="$store.state.isLogin"
+>
+          <img src="../assets/user.png" width="25" />
+          الصفحه الشخصيه</router-link
+        >
+
+        <router-link
+          to="/"
+          v-if="$store.state.userType == 'doctors'"
+          class="navbar-item"
+        >
+          <img src="../assets/1988856.png" width="25" />
+          حجوزات المرضى</router-link
+        >
+        <router-link
+          to="/testResults"
+          v-if="$store.state.userType == 'doctors'"
+          class="navbar-item"
+        >
+          <img src="../assets/4068568.png" width="25" />
+          نتائج التحاليل
+        </router-link>
+        <router-link
+          to="/laboratoryinsuranceresrvations"
+          v-if="$store.state.userType == 'insurances'"
+          class="link"
+        >
+          <img src="../assets/2436779.png" width="25" />
+          طلبات التحليل
+        </router-link>
+        <router-link
+          to="/"
+          v-if="$store.state.userType == 'insurances'"
+          class="link"
+        >
+          <img src="../assets/1988856.png" width="25" />
+          طلبات العيادات
+        </router-link>
+      </div>
     </div>
     <div class="navbar-item">
       <div class="buttons" v-show="$store.state.isLogin">
@@ -40,11 +85,26 @@
   </nav>
 </template>
 
-<script>
-export default {};
+<script setup>
+import { ref } from "@vue/reactivity";
+
+const nav = ref(false);
 </script>
 
 <style scoped>
+@media (max-width: 1023px) {
+  .navbar-menu {
+    display: block !important;
+  }
+}
+.navbar-menu {
+  display: none;
+  position: absolute;
+  z-index: 999;
+  right: 0;
+  left: 0;
+  top: 66px;
+}
 nav {
   background-color: #fff;
   width: 100%;

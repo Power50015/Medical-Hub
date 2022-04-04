@@ -3,7 +3,7 @@
     <div class="hero-body">
       <div class="container">
         <div class="columns is-centered">
-          <div class="column is-5-tablet is-4-desktop is-4-widescreen">
+          <div class="column is-12-tablet is-8-desktop is-8-widescreen">
             <form @submit.prevent="loginLaboratory" class="box">
               <p class="label has-text-centered is-size-5">
                 تسجيل الدخول كمعمل تحاليل

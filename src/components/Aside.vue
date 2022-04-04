@@ -7,14 +7,14 @@
       <li>
         <router-link
           to="/profile"
-          v-if="$store.state.userType == 'doctors'"
+          v-if="$store.state.isLogin"
           class="link"
         >
           <img
-            src="../assets/user.png"
-            width="25"
+            :src="$store.state.userImg"
+            width="90"
           />
-          الصفحه الشخصيه</router-link
+           {{$store.state.userName}}</router-link
         >
       </li>
       <li>
@@ -46,7 +46,7 @@
       <li>
         <router-link
           to="/laboratoryinsuranceresrvations"
-          v-if="$store.state.userType == 'insurances'"
+          v-if="$store.state.userType == 'insurance'"
           class="link"
         >
           <img
@@ -59,7 +59,7 @@
       <li>
         <router-link
           to="/"
-          v-if="$store.state.userType == 'insurances'"
+          v-if="$store.state.userType == 'insurance'"
           class="link"
         >
           <img
@@ -80,10 +80,16 @@ const asideShow = inject("aside");
 </script>
 
 <style scoped>
+@media (max-width: 1250px) {
+  aside {
+    display: none !important;
+  }
+}
 aside {
   width: 260px;
   background: #fff;
   height: 100vh;
+  display: block;
 }
 .logo {
   /* height: 75px; */

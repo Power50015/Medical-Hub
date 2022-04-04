@@ -5,9 +5,19 @@
     <div class="wave -three"></div>
   </div>
   <div class="is-flex">
-    <Aside v-if="$route.path != '/'" />
+    <Aside
+      v-if="
+        $route.path != '/' &&
+        $route.path != '/doctor-register' &&
+        $route.path != '/doctor-login' &&
+        $route.path != '/laboratory-register'&&
+        $route.path != '/laboratory-login' &&
+        $route.path != '/insurance-register' &&
+        $route.path != '/insurance-login'
+      "
+    />
     <div class="view">
-      <Navbar v-if="$route.path != '/'"  @aside-event="showAsideBtn"/>
+      <Navbar v-if="$route.path != '/'" @aside-event="showAsideBtn" />
       <router-view />
     </div>
   </div>

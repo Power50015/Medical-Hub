@@ -56,6 +56,8 @@ const unsub = await onAuthStateChanged(auth, async (user) => {
               birthday: doc.data().birthday,
               gender: doc.data().gender,
               phone: doc.data().phone,
+              map: doc.data().map,
+              img: doc.data().img,
               login: true,
             });
           });
@@ -63,10 +65,14 @@ const unsub = await onAuthStateChanged(auth, async (user) => {
       } else {
         querySnapshot.forEach((doc) => {
           store.commit("userData", {
-            type: "laboratorys",
+            type: "laboratory",
             docId: doc.id,
             name: doc.data().name,
             email: doc.data().email,
+            map: doc.data().map,
+            img: doc.data().img,
+            phone: doc.data().phone,
+            address: doc.data().address,
             login: true,
           });
         });
@@ -74,10 +80,14 @@ const unsub = await onAuthStateChanged(auth, async (user) => {
     } else {
       querySnapshot.forEach((doc) => {
         store.commit("userData", {
-          type: "insurances",
+          type: "insurance",
           docId: doc.id,
           name: doc.data().name,
           email: doc.data().email,
+          map: doc.data().map,
+          img: doc.data().img,
+          phone: doc.data().phone,
+          address: doc.data().address,
           login: true,
         });
       });
@@ -99,6 +109,8 @@ const store = createStore({
       userEmail: "",
       userAddress: "",
       userProf: "",
+      userMap: "",
+      userImg: "",
       doctorsReservations: [],
       laboratory: [],
       testRequest: [],
@@ -112,14 +124,14 @@ const store = createStore({
       state.userType = payload.type;
       state.userName = payload.name;
       state.userEmail = payload.email;
-      if (payload.type === "doctors") {
-        state.userAddress = payload.address;
-        state.userProf = payload.prof;
-        state.userFullName = payload.fullname;
-        state.userPhone = payload.phone;
-        state.userGender = payload.gender;
-        state.userBirthday = payload.birthday;
-      }
+      state.userAddress = payload.address;
+      state.userMap = payload.map;
+      state.userImg = payload.img;
+      state.userPhone = payload.phone;
+      state.userProf = payload.prof;
+      state.userFullName = payload.fullname;
+      state.userGender = payload.gender;
+      state.userBirthday = payload.birthday;
     },
     doctorsReservationsData(state, payload) {
       if (state.doctorsReservations.includes(payload) === false) {
@@ -165,10 +177,16 @@ const store = createStore({
                   phone: payload.form.phone,
                   gender: payload.form.gender,
                   birthday: payload.form.birthday,
+                  map: payload.form.map,
+                  img: payload.form.img,
                 }
               : {
                   name: payload.form.name,
                   email: payload.form.email,
+                  address: payload.form.address,
+                  phone: payload.form.phone,
+                  map: payload.form.map,
+                  img: payload.form.img,
                 }
           ).then(() => {
             context.commit("userData", {
@@ -181,6 +199,8 @@ const store = createStore({
               phone: payload.form.phone,
               gender: payload.form.gender,
               birthday: payload.form.birthday,
+              map: payload.form.map,
+              img: payload.form.img,
               login: true,
             });
             unsub();
@@ -231,6 +251,8 @@ const store = createStore({
                     birthday: doc.data().birthday,
                     gender: doc.data().gender,
                     phone: doc.data().phone,
+                    img: doc.data().img,
+                    map: doc.data().map,
                     login: true,
                   });
                 });
@@ -238,10 +260,14 @@ const store = createStore({
             } else {
               querySnapshot.forEach((doc) => {
                 context.commit("userData", {
-                  type: "laboratorys",
+                  type: "laboratory",
                   docId: doc.id,
                   name: doc.data().name,
                   email: doc.data().email,
+                  img: doc.data().img,
+                  map: doc.data().map,
+                  address: doc.data().address,
+                  phone: doc.data().phone,
                   login: true,
                 });
               });
@@ -249,10 +275,14 @@ const store = createStore({
           } else {
             querySnapshot.forEach((doc) => {
               context.commit("userData", {
-                type: "insurances",
+                type: "insurance",
                 docId: doc.id,
                 name: doc.data().name,
                 email: doc.data().email,
+                img: doc.data().img,
+                map: doc.data().map,
+                address: doc.data().address,
+                phone: doc.data().phone,
                 login: true,
               });
             });
@@ -292,10 +322,16 @@ const store = createStore({
           phone: payload.phone,
           gender: payload.gender,
           birthday: payload.birthday,
+          img: payload.img,
+          map: payload.map,
         });
       } else {
         await updateDoc(doc(db, context.state.userType, context.state.docId), {
           name: payload.name,
+          address: payload.address,
+          phone: payload.phone,
+          img: payload.img,
+          map: payload.map,
         });
       }
       context.state.userName = payload.name;
@@ -305,13 +341,23 @@ const store = createStore({
       context.state.userPhone = payload.phone;
       context.state.userGender = payload.gender;
       context.state.userBirthday = payload.birthday;
+      context.state.userMap = payload.map;
+      context.state.userImg = payload.img;
     },
     userLogout(context) {
       signOut(auth).then(() => {
         context.commit("userData", {
           type: "",
+          fullName: "",
           name: "",
+          address: "",
+          prof: "",
+          phone: "",
           email: "",
+          gender: "",
+          birthday: "",
+          img: "",
+          map: "",
           login: false,
         });
         context.state.doctorsReservations = [];
@@ -352,7 +398,7 @@ const store = createStore({
     },
     async featchTestRequestData(context) {
       context.state.testRequest = [];
-      if (context.state.userType == "laboratorys") {
+      if (context.state.userType == "laboratory") {
         const q = query(
           collection(db, "testRequest"),
           where("laboratory", "==", context.state.userName),
