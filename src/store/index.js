@@ -462,6 +462,8 @@ const store = createStore({
         insurance: payload.insurance,
         testRequest: payload.test,
         states: 0,
+        day: payload.day,
+        month: payload.month,
       });
     },
     async addTestResult(context, payload) {

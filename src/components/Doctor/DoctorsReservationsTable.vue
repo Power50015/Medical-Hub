@@ -1,12 +1,15 @@
 <template>
   <div class="container">
-    <div class="columns">
-      <div class="column is-three-fifths is-offset-one-fifth">
+    <div class="">
+      <div class="">
         <div class="section">
           <table class="table is-bordered is-striped is-truncated">
             <thead>
               <tr>
                 <th>أسم المريض</th>
+                <th>تاريخ الحجز يوم</th>
+                <th>تاريخ الحجز شهر</th>
+                <th>معاد الحجز من : إلى</th>
                 <th>حجز معمل تحاليل</th>
                 <th>تم الحضور</th>
                 <th>إلغاءالحجز</th>
@@ -15,6 +18,9 @@
             <tbody>
               <tr v-for="reservations in $store.state.doctorsReservations">
                 <td>{{ reservations.userName }}</td>
+                <td>{{ reservations.day }}</td>
+                <td>{{ reservations.month }}</td>
+                <td>{{ reservations.time }}</td>
                 <td>
                   <button
                     class="button is-primary"
@@ -52,10 +58,7 @@
                   </button>
                 </td>
                 <div class="modal" v-if="showModel == reservations.docId">
-                  <div
-                    class="modal-background"
-                    @click="showModel = ''"
-                  ></div>
+                  <div class="modal-background" @click="showModel = ''"></div>
                   <div class="modal-card">
                     <header class="modal-card-head">
                       <p class="modal-card-title">حجز تحاليل</p>
@@ -81,7 +84,30 @@
                           </div>
                         </div>
                       </div>
-
+                      <div class="field">
+                        <label class="label">يوم الحجز</label>
+                        <div class="control">
+                          <div class="select">
+                            <select v-model="day">
+                              <option v-for="i = 1 in 30" :value="i">
+                                {{ i }}
+                              </option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="field">
+                        <label class="label">شهر الحجز</label>
+                        <div class="control">
+                          <div class="select">
+                            <select v-model="month">
+                              <option v-for="i = 1 in 12" :value="i">
+                                {{ i }}
+                              </option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
                       <textarea
                         name="testData"
                         v-model="testData"
@@ -98,7 +124,9 @@
                             reservations.userEmail,
                             $store.state.userName,
                             $store.state.userEmail,
-                            reservations.insurance
+                            reservations.insurance,
+                            day,
+                            month
                           )
                         "
                       >
@@ -128,13 +156,17 @@ export default {
     const showModel = ref(false);
     const testData = ref("");
     const laboratoryName = ref("");
+    const day = ref(1);
+    const month = ref(1);
     function laboratoryReservations(
       laboratory,
       userName,
       userEmail,
       doctorName,
       doctorEmail,
-      insurance
+      insurance,
+      day,
+      month
     ) {
       store.dispatch("addTestRequest", {
         laboratory: laboratory,
@@ -144,12 +176,14 @@ export default {
         userEmail: userEmail,
         insurance: insurance,
         test: testData.value,
+        day: day,
+        month: month,
       });
       showModel.value = false;
       alert("تم تسجيل طلب التحليل");
     }
 
-    return { showModel, testData, laboratoryName, laboratoryReservations };
+    return { showModel, testData, laboratoryName, laboratoryReservations,day,month };
   },
 };
 </script>
@@ -166,13 +200,13 @@ textarea {
   display: flex;
 }
 .modal-background {
-    background-color: rgb(10 10 10 / 25%);
+  background-color: rgb(10 10 10 / 25%);
 }
-th{
+th {
   background-color: #343b42;
   color: #fff !important;
 }
-td{
+td {
   background-color: #e1e2e6;
 }
 </style>
