@@ -8,6 +8,8 @@
               <tr>
                 <th>أسم المريض</th>
                 <th>أسم الطبيب</th>
+                <th>تاريخ الحجز يوم</th>
+                <th>تاريخ الحجز شهر</th>
                 <th>التحليل</th>
                 <th>نتائج التحاليل</th>
                 <th>إلغاءالحجز</th>
@@ -17,6 +19,8 @@
               <tr v-for="testRequest in $store.state.testRequest">
                 <td>{{ testRequest.userName }}</td>
                 <td>{{ testRequest.doctorName }}</td>
+                <td>{{ testRequest.day }}</td>
+                <td>{{ testRequest.month }}</td>
                 <td>{{ testRequest.testRequest }}</td>
                 <td>
                   <button
@@ -42,10 +46,7 @@
                   </button>
                 </td>
                 <div class="modal" v-if="showModel == testRequest.docId">
-                  <div
-                    class="modal-background"
-                    @click="showModel = ''"
-                  ></div>
+                  <div class="modal-background" @click="showModel = ''"></div>
                   <div class="modal-card">
                     <header class="modal-card-head">
                       <p class="modal-card-title">نتائج التحاليل</p>

@@ -3,7 +3,7 @@
   <DoctorsInsuranceReservationsTable
     v-if="$store.state.userType == 'insurances'"
   />
-  <LaboratoryReservationsTable  v-if="$store.state.userType == 'laboratorys'"/>
+  <LaboratoryReservationsTable  v-if="$store.state.userType == 'laboratory'"/>
 </template>
 
 <script>
