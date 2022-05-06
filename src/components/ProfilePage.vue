@@ -4,42 +4,40 @@
       <div class="container">
         <div class="columns is-centered">
           <div class="column is-12-tablet is-8-desktop is-8-widescreen">
-            <form @submit.prevent="addUser" class="box">
-              <p class="label has-text-centered is-size-5">
-                تسجيل حساب جديد كشركه تأمين
-              </p>
+            <form class="box" @submit.prevent="editUser">
+              <p class="label has-text-centered is-size-5">الصفحه الشخصيه</p>
               <p class="has-text-centered is-size-6 has-text-danger"></p>
               <br />
               <div class="field">
                 <div class="control has-icons-left">
                   <input
                     type="text"
-                    placeholder="أسم الشركه"
+                    placeholder="أسم المستخدم"
                     class="input"
-                    v-model="form.name"
                     required
+                    v-model="form.name"
                   />
                 </div>
               </div>
-              <div class="field">
+              <div class="field" v-if="auth.userType == 'doctors'">
                 <div class="control has-icons-left">
                   <input
                     type="text"
-                    placeholder="البريد الإلكترونى"
+                    placeholder="الأسم بالكامل"
                     class="input"
                     required
-                    v-model="form.email"
+                    v-model="form.fullname"
                   />
                 </div>
               </div>
               <div class="field">
                 <div class="control has-icons-left">
                   <input
-                    type="password"
-                    placeholder="كلمه المرور"
+                    type="email"
+                    placeholder="البريد الإلكترونى"
                     class="input"
-                    required
-                    v-model="form.password"
+                    disabled
+                    :value="auth.userEmail"
                   />
                 </div>
               </div>
@@ -93,6 +91,42 @@
                 <div class="control has-icons-left">
                   <input
                     type="text"
+                    placeholder="رقم الهاتف"
+                    class="input"
+                    required
+                    v-model="form.phone"
+                  />
+                </div>
+              </div>
+              <div class="field" v-if="auth.userType == 'doctors'">
+                <h6>تاريخ الميلاد</h6>
+                <div class="control has-icons-left">
+                  <input
+                    type="date"
+                    class="input"
+                    required
+                    v-model="form.birthday"
+                    min="1950-01-01"
+                    max="2000-12-31"
+                  />
+                </div>
+                <div>
+                  <span>العمر : </span>
+                  <span>{{ isNaN(age) ? "" : age + " سنه " }}</span>
+                </div>
+              </div>
+              <div class="field" v-if="auth.userType == 'doctors'">
+                <div class="control has-icons-left">
+                  <select v-model="form.gender" class="input" required>
+                    <option value="ذكر">ذكر</option>
+                    <option value="أنثى">أنثى</option>
+                  </select>
+                </div>
+              </div>
+              <div class="field">
+                <div class="control has-icons-left">
+                  <input
+                    type="text"
                     placeholder="العنوان"
                     class="input"
                     required
@@ -100,15 +134,14 @@
                   />
                 </div>
               </div>
-              <div class="field">
+              <div class="field" v-if="auth.userType == 'doctors'">
                 <div class="control has-icons-left">
-                  <input
-                    type="text"
-                    placeholder="رقم الهاتف"
-                    class="input"
-                    required
-                    v-model="form.phone"
-                  />
+                  <select v-model="form.prof" class="input" required>
+                    <option value="باطنه">باطنه</option>
+                    <option value="عظام">عظام</option>
+                    <option value="جراحه">جراحه</option>
+                    <option value="رمد">رمد</option>
+                  </select>
                 </div>
               </div>
               <div class="field">
@@ -124,15 +157,9 @@
                   class="button is-primary is-fullwidth"
                   v-show="!isDisabled"
                 >
-                  تسجيل جديد
+                  تعديل البيانات
                 </button>
               </div>
-              <br />
-              <p class="has-text-centered">
-                <router-link class="label has-text-link" to="insurance-login">
-                  لدى حساب بالفعل
-                </router-link>
-              </p>
             </form>
           </div>
         </div>
@@ -141,35 +168,80 @@
   </section>
 </template>
 
-<script setup lang="ts">
-import { reactive, ref } from "@vue/reactivity";
+<script lang="ts" setup>
 import { useRouter } from "vue-router";
+import { useAuthStore } from "@/stores/auth";
+import { reactive, ref } from "@vue/reactivity";
 import { computed } from "@vue/runtime-core";
+import app from "@/firebase";
 import {
   getStorage,
   ref as refire,
   uploadBytesResumable,
   getDownloadURL,
 } from "firebase/storage";
-import { useAuthStore } from "@/stores/auth";
-const storage = getStorage();
 
+const storage = getStorage();
 const router = useRouter();
 const auth = useAuthStore();
 const form = reactive({
-  name: "",
-  email: "",
-  password: "",
-  phone: "",
-  address: "",
-  map: "",
-  img: "",
-  type: "insurance",
+  name: auth.userName,
+  fullname: auth.userFullName,
+  phone: auth.userPhone,
+  gender: auth.userGender,
+  address: auth.userAddress,
+  birthday: auth.userBirthday,
+  prof: auth.userProf,
+  map: auth.userMap,
+  img: auth.userImg,
+  type: auth.userType,
 });
+const isDisabled = ref(false);
 const imgData = reactive([]);
 const imgPreview = ref("");
 const imgUpload = ref(0);
-const isDisabled = ref(false);
+
+const age = computed(() => {
+  var today = new Date();
+  var birthDate = new Date(form.birthday);
+  var age = today.getFullYear() - birthDate.getFullYear();
+  var m = today.getMonth() - birthDate.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+    age--;
+  }
+  return age;
+});
+
+function editUser() {
+  isDisabled.value = false;
+
+  if (imgData.value == undefined) {
+    auth.editUser(form);
+    router.push("/");
+  } else {
+    const storageRef = refire(storage, `${imgData.value.name}`);
+    const uploadTask = uploadBytesResumable(storageRef, imgData.value);
+    uploadTask.on(
+      "state_changed",
+      (snapshot) => {
+        imgUpload.value = Math.floor(
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+        );
+      },
+      (error) => {
+        alert(error);
+      },
+      () => {
+        getDownloadURL(uploadTask.snapshot.ref).then((URL) => {
+          isDisabled.value = true;
+          form.img = URL;
+          auth.editUser(form);
+          router.push("/");
+        });
+      }
+    );
+  }
+}
 
 const GoogleMapsURLToEmbedURL = computed(() => {
   var coords = /\@([0-9\.\,\-a-zA-Z]*)/.exec(form.map);
@@ -184,31 +256,6 @@ const GoogleMapsURLToEmbedURL = computed(() => {
     );
   }
 });
-
-function addUser() {
-  isDisabled.value = false;
-  const storageRef = refire(storage, `${imgData.value.name}`);
-  const uploadTask = uploadBytesResumable(storageRef, imgData.value);
-  uploadTask.on(
-    "state_changed",
-    (snapshot) => {
-      imgUpload.value = Math.floor(
-        (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-      );
-    },
-    (error) => {
-      alert(error);
-    },
-    () => {
-      getDownloadURL(uploadTask.snapshot.ref).then((URL) => {
-        isDisabled.value = true;
-        form.img = URL;
-        auth.addUser(form);
-        router.push("/");
-      });
-    }
-  );
-}
 
 function DetectFiles(input) {
   imgData.value = input[0];

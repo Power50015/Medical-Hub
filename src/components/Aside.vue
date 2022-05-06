@@ -5,67 +5,50 @@
     </div>
     <ul>
       <li>
-        <router-link
-          to="/profile"
-          v-if="$store.state.isLogin"
-          class="link"
-        >
-          <img
-            :src="$store.state.userImg"
-            width="90"
-          />
-           {{$store.state.userName}}</router-link
+        <router-link to="/" v-if="auth.isLogin" class="link">
+          <img :src="auth.userImg" width="90" />
+          {{ auth.userName }}</router-link
         >
       </li>
       <li>
-        <router-link
-          to="/"
-          v-if="$store.state.userType == 'doctors'"
-          class="link"
-        >
-          <img
-            src="../assets/1988856.png"
-            width="25"
-          />
+        <router-link to="/" v-if="auth.userType == 'doctors'" class="link">
+          <img src="../assets/1988856.png" width="25" />
           حجوزات المرضى</router-link
         >
       </li>
       <li>
         <router-link
-          to="/testResults"
-          v-if="$store.state.userType == 'doctors'"
+          to="/laboratory"
+          v-if="auth.userType == 'doctors'"
           class="link"
         >
-          <img
-            src="../assets/4068568.png"
-            width="25"
-          />
+          <img src="../assets/4068568.png" width="25" />
           نتائج التحاليل
         </router-link>
       </li>
       <li>
         <router-link
-          to="/laboratoryinsuranceresrvations"
-          v-if="$store.state.userType == 'insurance'"
+          to="/laboratory"
+          v-if="auth.userType == 'insurance'"
           class="link"
         >
-          <img
-            src="../assets/2436779.png"
-            width="25"
-          />
+          <img src="../assets/2436779.png" width="25" />
           طلبات التحليل
         </router-link>
       </li>
       <li>
         <router-link
-          to="/"
-          v-if="$store.state.userType == 'insurance'"
+          to="/laboratory"
+          v-if="auth.userType == 'laboratory'"
           class="link"
         >
-          <img
-            src="../assets/1988856.png"
-            width="25"
-          />
+          <img src="../assets/2436779.png" width="25" />
+          التحليل
+        </router-link>
+      </li>
+      <li>
+        <router-link to="/" v-if="auth.userType == 'insurance'" class="link">
+          <img src="../assets/1988856.png" width="25" />
           طلبات العيادات
         </router-link>
       </li>
@@ -73,9 +56,11 @@
   </aside>
 </template>
 
-<script setup>
+<script setup lang="ts">
+import { useAuthStore } from "@/stores/auth";
 import { inject } from "@vue/runtime-core";
 
+const auth = useAuthStore();
 const asideShow = inject("aside");
 </script>
 

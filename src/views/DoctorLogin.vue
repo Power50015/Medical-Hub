@@ -4,7 +4,7 @@
       <div class="container">
         <div class="columns is-centered">
           <div class="column is-12-tablet is-8-desktop is-8-widescreen">
-            <form @submit.prevent="loginDoctor" class="box">
+            <form @submit.prevent="loginUser" class="box">
               <p class="label has-text-centered is-size-5">
                 تسجيل الدخول كطبيب
               </p>
@@ -65,32 +65,25 @@
   </section>
 </template>
 
-<script>
+<script lang="ts" setup>
+import { useAuthStore } from "@/stores/auth";
 import { reactive, ref } from "@vue/reactivity";
 import { useRouter } from "vue-router";
-import { useStore } from "vuex";
-export default {
-  setup() {
-    const router = useRouter();
-    const store = useStore();
-    const form = reactive({
-      email: "",
-      password: "",
-    });
-    const isDisabled = ref(false);
-    function loginDoctor() {
-      isDisabled.value = true;
-      store.dispatch("userLogin", { type: "doctors", form }).then(() => {
-        setTimeout(() => {
-          form.email = "";
-          form.password = "";
-          router.push("/dashbord");
-        }, 1500);
-      });
-    }
-    return { form, loginDoctor, isDisabled };
-  },
-};
+
+const router = useRouter();
+const auth = useAuthStore();
+const form = reactive({
+  email: "ahmed@x2x.hunter",
+  password: "ahmed@x2x.hunter",
+  type:"doctors"
+});
+const isDisabled = ref(false);
+function loginUser() {
+  auth.loginUser(form);
+  isDisabled.value = true;
+  router.push("/");
+
+}
 </script>
 
 <style></style>

@@ -4,7 +4,7 @@
       <div class="container">
         <div class="columns is-centered">
           <div class="column is-12-tablet is-8-desktop is-8-widescreen">
-            <form @submit.prevent="saveLaboratory" class="box">
+            <form @submit.prevent="addUser" class="box">
               <p class="label has-text-centered is-size-5">
                 تسجيل حساب جديد كمعمل تحاليل
               </p>
@@ -47,7 +47,7 @@
               <div class="mb-3">
                 <label for="formFile" class="form-label">الصورة الشخصيه</label>
                 <template v-if="imgPreview">
-                  <img :src="imgPreview" class="img-fluid" height="300" />
+                  <img :src="imgPreview" class="img-fluid" height="300" width="300" />
                   <p class="mb-0">file name: {{ imgData.value.name }}</p>
                   <p class="mb-0">
                     size: {{ Math.round(imgData.value.size / 1024) }}KB
@@ -141,10 +141,9 @@
   </section>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { reactive, ref } from "@vue/reactivity";
 import { useRouter } from "vue-router";
-import { useStore } from "vuex";
 import { computed } from "@vue/runtime-core";
 import {
   getStorage,
@@ -152,10 +151,11 @@ import {
   uploadBytesResumable,
   getDownloadURL,
 } from "firebase/storage";
+import { useAuthStore } from "@/stores/auth";
 const storage = getStorage();
 
 const router = useRouter();
-const store = useStore();
+const auth = useAuthStore();
 const form = reactive({
   name: "",
   email: "",
@@ -164,6 +164,7 @@ const form = reactive({
   address: "",
   map: "",
   img: "",
+  type:"laboratory"
 });
 const imgData = reactive([]);
 const imgPreview = ref("");
@@ -184,7 +185,7 @@ const GoogleMapsURLToEmbedURL = computed(() => {
   }
 });
 
-function saveLaboratory() {
+function addUser() {
   isDisabled.value = false;
   const storageRef = refire(storage, `${imgData.value.name}`);
   const uploadTask = uploadBytesResumable(storageRef, imgData.value);
@@ -200,28 +201,15 @@ function saveLaboratory() {
     },
     () => {
       getDownloadURL(uploadTask.snapshot.ref).then((URL) => {
+        isDisabled.value = true;
         form.img = URL;
-
-        store
-          .dispatch("userRegister", { type: "laboratory", form })
-          .then(() => {
-            setTimeout(() => {
-              form.name = "";
-              form.email = "";
-              form.phone = "";
-              form.password = "";
-              form.address = "";
-              form.map = "";
-              form.img = "";
-              router.push("/");
-            }, 3000);
-          });
+        auth.addUser(form);
+        router.push("/");
       });
     }
   );
-
-  isDisabled.value = true;
 }
+
 function DetectFiles(input) {
   imgData.value = input[0];
   if (input) {

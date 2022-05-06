@@ -4,37 +4,28 @@
     <div class="wave -two"></div>
     <div class="wave -three"></div>
   </div>
-  <div class="is-flex">
-    <Aside
-      v-if="
-        $route.path != '/' &&
-        $route.path != '/doctor-register' &&
-        $route.path != '/doctor-login' &&
-        $route.path != '/laboratory-register'&&
-        $route.path != '/laboratory-login' &&
-        $route.path != '/insurance-register' &&
-        $route.path != '/insurance-login'
-      "
-    />
+  <div class="is-flex" v-if="auth.isLoding">
+    <Aside v-if="auth.isLogin" />
     <div class="view">
-      <Navbar v-if="$route.path != '/'" @aside-event="showAsideBtn" />
-      <router-view />
+      <Navbar v-if="auth.isLogin" @aside-event="showAsideBtn" />
+      <RouterView />
     </div>
   </div>
-</template>
-<script setup>
-import { useStore } from "vuex";
-import Navbar from "./components/Navbar.vue";
-import Aside from "./components/Aside.vue";
-import { provide, ref } from "@vue/runtime-core";
 
-const store = useStore();
-setTimeout(() => {
-  store.dispatch("featchDoctorsReservationsData");
-  store.dispatch("featchTestRequestData");
-  store.dispatch("laboratoryData");
-  store.dispatch("featchTestResult");
-}, 2000);
+  <div class="loading" v-else>
+    <img src="./assets/loading.gif" alt="" />
+  </div>
+</template>
+<script setup lang="ts">
+import { RouterView } from "vue-router";
+import { useAuthStore } from "./stores/auth";
+import { ref } from "@vue/reactivity";
+import { provide } from "@vue/runtime-core";
+
+import Aside from "@/components/Aside.vue";
+import Navbar from "@/components/Navbar.vue";
+
+const auth = useAuthStore();
 
 const showAside = ref(true);
 
@@ -45,6 +36,22 @@ function showAsideBtn() {
 }
 </script>
 <style scoped>
+.loading {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.loading img{
+  width: 300px;
+  height: 300px;
+}
 .view {
   width: 100%;
 }
