@@ -11,7 +11,7 @@
         >
       </li>
       <li>
-        <router-link to="/" v-if="auth.userType == 'doctors'" class="link">
+        <router-link to="/doctor" v-if="auth.userType == 'doctors'" class="link">
           <img src="../assets/1988856.png" width="25" />
           حجوزات المرضى</router-link
         >
@@ -47,7 +47,7 @@
         </router-link>
       </li>
       <li>
-        <router-link to="/" v-if="auth.userType == 'insurance'" class="link">
+        <router-link to="/doctor" v-if="auth.userType == 'insurance'" class="link">
           <img src="../assets/1988856.png" width="25" />
           طلبات العيادات
         </router-link>

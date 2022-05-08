@@ -1,7 +1,7 @@
 <template>
   <LaboratoryInsuranceResrvationsTable v-if="auth.userType == 'insurance'"/>
-  <LaboratoryDoctorResrvations v-if="auth.userType == 'laboratory'"/>
-  <LaboratoryResrvationsTable v-if="auth.userType == 'doctors'"/>
+  <LaboratoryDoctorResrvations v-if="auth.userType == 'doctors'"/>
+  <LaboratoryResrvationsTable v-if="auth.userType == 'laboratory'"/>
 </template>
 
 <script setup lang="ts">

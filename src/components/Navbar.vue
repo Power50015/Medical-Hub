@@ -3,7 +3,10 @@
     <div class="navbar-item">
       <div class="buttons" v-show="auth.isLogin">
         <button class="menu-button" @click="$emit('asideEvent')">
-          <img src="https://www.projectscreen.co.uk/assets/burger_black.png" width="25" />
+          <img
+            src="https://www.projectscreen.co.uk/assets/burger_black.png"
+            width="25"
+          />
         </button>
       </div>
     </div>
@@ -12,8 +15,15 @@
         <img src="../assets/logo.png" width="100" />
       </router-link>
 
-      <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample"
-        v-if="auth.isLogin" @click="nav = !nav">
+      <a
+        role="button"
+        class="navbar-burger"
+        aria-label="menu"
+        aria-expanded="false"
+        data-target="navbarBasicExample"
+        v-if="auth.isLogin"
+        @click="nav = !nav"
+      >
         <span aria-hidden="true"></span>
         <span aria-hidden="true"></span>
         <span aria-hidden="true"></span>
@@ -27,15 +37,27 @@
           الصفحه الشخصيه
         </router-link>
 
-        <router-link to="/" v-if="auth.userType == 'doctors'" class="navbar-item">
+        <router-link
+          to="/"
+          v-if="auth.userType == 'doctors'"
+          class="navbar-item"
+        >
           <img src="../assets/1988856.png" width="25" />
           حجوزات المرضى
         </router-link>
-        <router-link to="/testResults" v-if="auth.userType == 'doctors'" class="navbar-item">
+        <router-link
+          to="/testResults"
+          v-if="auth.userType == 'doctors'"
+          class="navbar-item"
+        >
           <img src="../assets/4068568.png" width="25" />
           نتائج التحاليل
         </router-link>
-        <router-link to="/laboratoryinsuranceresrvations" v-if="auth.userType == 'insurances'" class="link">
+        <router-link
+          to="/laboratoryinsuranceresrvations"
+          v-if="auth.userType == 'insurances'"
+          class="link"
+        >
           <img src="../assets/2436779.png" width="25" />
           طلبات التحليل
         </router-link>
@@ -47,9 +69,7 @@
     </div>
     <div class="navbar-item">
       <div class="buttons" v-show="auth.isLogin">
-        <button class="button is-primary" @click="auth.logout">
-          تسجيل خروج
-        </button>
+        <button class="button is-primary" @click="logout">تسجيل خروج</button>
       </div>
     </div>
   </nav>
@@ -58,9 +78,16 @@
 <script setup lang="ts">
 import { useAuthStore } from "@/stores/auth";
 import { ref } from "@vue/reactivity";
+import { useRouter } from "vue-router";
 
 const auth = useAuthStore();
+const router = useRouter();
+
 const nav = ref(false);
+function logout() {
+  auth.logout();
+  router.push("/");
+}
 </script>
 
 <style scoped>

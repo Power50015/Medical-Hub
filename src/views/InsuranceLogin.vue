@@ -73,8 +73,8 @@ import { useRouter } from "vue-router";
 const router = useRouter();
 const auth = useAuthStore();
 const form = reactive({
-  email: "ert@ert.com",
-  password: "ert@ert.com",
+  email: "insurance@insurance.com",
+  password: "insurance@insurance.com",
   type: "insurance",
 });
 

@@ -369,7 +369,7 @@ export const useAuthStore = defineStore({
       }
       this.isLoding = true;
     },
-    async updateStates(payload: any) {
+    async updateStates(payload: any) {    
       await updateDoc(doc(db, payload.table, payload.id), {
         states: payload.states,
         /**
@@ -379,6 +379,34 @@ export const useAuthStore = defineStore({
   - 3 - Doctor accsepted
   - 4 - Doctor refuse
   **/
+      });
+    },
+    async addTestRequest(payload: any) {
+      await addDoc(collection(db, "testRequest"), {
+        laboratoryEmail: payload.laboratory,
+        laboratory: payload.laboratoryname,
+        doctorName: payload.doctorName,
+        doctorEmail: payload.doctorEmail,
+        userName: payload.userName,
+        userEmail: payload.userEmail,
+        insurance: payload.insurance,
+        testRequest: payload.test,
+        states: 0,
+        day: payload.day,
+        month: payload.month,
+      });
+    },
+    async addTestResult(payload: any) {
+      await addDoc(collection(db, "testResult"), {
+        laboratory: payload.laboratory,
+        laboratoryEmail: this.userEmail,
+        doctorName: payload.doctorName,
+        doctorEmail: payload.doctorEmail,
+        userName: payload.userName,
+        userEmail: payload.userEmail,
+        insurance: payload.insurance,
+        testResult: payload.testResult,
+        testRequest: payload.testRequest,
       });
     },
   },
