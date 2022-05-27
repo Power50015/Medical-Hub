@@ -6,6 +6,7 @@
           <table class="table is-bordered is-striped is-truncated">
             <thead>
               <tr>
+                <th>كود المريض</th>
                 <th>المريض</th>
                 <th>تاريخ الحجز يوم</th>
                 <th>تاريخ الحجز شهر</th>
@@ -17,6 +18,7 @@
             </thead>
             <tbody>
               <tr v-for="doctorsRequest in resrvationsData">
+                <td>{{ doctorsRequest.userId }}</td>
                 <td @click="doctorsRequest.Usermodel = true">
                   {{ doctorsRequest.userName }}
                 </td>
@@ -162,7 +164,7 @@ import DoctorModel from "@/components/doctor/DoctorModel.vue";
 
 import app from "@/firebase";
 import { getFirestore } from "firebase/firestore";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import { collection, getDocs, query, where, orderBy } from "firebase/firestore";
 
 import { useAuthStore } from "@/stores/auth";
 import { reactive, ref } from "@vue/reactivity";
@@ -179,7 +181,6 @@ const laboratoryData = reactive([]);
 const laboratoryName = ref("");
 const day = ref(1);
 const month = ref(1);
-
 
 async function laboratoryReservations(
   laboratory,
@@ -198,7 +199,6 @@ async function laboratoryReservations(
     where("email", "==", laboratory)
   );
 
-
   const querySnapshot = await getDocs(q);
   querySnapshot.forEach((doc) => {
     laboratoryname.value = doc.data().name;
@@ -207,7 +207,7 @@ async function laboratoryReservations(
 
   auth.addTestRequest({
     laboratory: laboratory,
-    laboratoryname:laboratoryname.value,
+    laboratoryname: laboratoryname.value,
     doctorName: doctorName,
     doctorEmail: doctorEmail,
     userName: userName,
@@ -227,18 +227,20 @@ async function getresrvationsData() {
   resrvationsData.length = 0;
   const q = query(
     collection(db, "doctorsReservations"),
-    where("doctor", "==", auth.userEmail),
-    where("states", "==", 1)
+    orderBy("month")
   );
 
   const querySnapshot = await getDocs(q);
 
-  querySnapshot.forEach((doc) => {
-    resrvationsData.push({
-      docId: doc.id,
-      ...doc.data(),
-      Usermodel: false,
-    });
+  querySnapshot.forEach(async (doc) => {
+    if (doc.data().doctor == auth.userEmail && doc.data().states == 1) {
+      resrvationsData.push({
+        docId: doc.id,
+        ...doc.data(),
+        Usermodel: false,
+        userId: await getId(doc.data().userEmail),
+      });
+    }
   });
 }
 
@@ -255,6 +257,18 @@ async function getLaboratoryData() {
       ...doc.data(),
     });
   });
+}
+
+async function getId(prop) {
+  let Xid;
+  const q = query(collection(db, "users"), where("email", "==", prop));
+
+  const querySnapshot = await getDocs(q);
+  querySnapshot.forEach((doc) => {
+    Xid = doc.id;
+  });
+
+  return Xid;
 }
 </script>
 <style scoped>

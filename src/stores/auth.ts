@@ -407,6 +407,9 @@ export const useAuthStore = defineStore({
         insurance: payload.insurance,
         testResult: payload.testResult,
         testRequest: payload.testRequest,
+        day: payload.day,
+        month: payload.month,
+        attach: payload.attach
       });
     },
   },

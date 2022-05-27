@@ -6,9 +6,12 @@
           <table class="table is-bordered is-striped is-truncated">
             <thead>
               <tr>
+                <th>كود المريض</th>
                 <th>المريض</th>
                 <th>الطبيب</th>
                 <th>المعمل</th>
+                <th>يوم الحجز</th>
+                <th>شهر الحجز</th>
                 <th>التحليل</th>
                 <th>الموافقه على الحجز</th>
                 <th>رفض الحجز</th>
@@ -16,6 +19,7 @@
             </thead>
             <tbody>
               <tr v-for="testRequest in resrvationsData">
+                <td>{{ testRequest.userId }}</td>
                 <td @click="testRequest.Usermodel = true">
                   {{ testRequest.userName }}
                 </td>
@@ -25,6 +29,8 @@
                 <td @click="testRequest.Laboratorymodel = true">
                   {{ testRequest.laboratory }}
                 </td>
+                <td>{{ testRequest.day }}</td>
+                <td>{{ testRequest.month }}</td>
                 <td>{{ testRequest.testRequest }}</td>
                 <td>
                   <button
@@ -103,23 +109,34 @@ getresrvationsData();
 
 async function getresrvationsData() {
   resrvationsData.length = 0;
-  const q = query(
-    collection(db, "testRequest"),
-    where("insurance", "==", auth.userEmail),
-    where("states", "==", 0)
-  );
+  const q = query(collection(db, "testRequest"), orderBy("month"));
 
   const querySnapshot = await getDocs(q);
 
-  querySnapshot.forEach((doc) => {
-    resrvationsData.push({
-      id: doc.id,
-      ...doc.data(),
-      Laboratorymodel: false,
-      Usermodel: false,
-      Doctormodel: false,
-    });
+  querySnapshot.forEach(async (doc) => {
+    if (doc.data().insurance == auth.userEmail && doc.data().states == 0) {
+      resrvationsData.push({
+        id: doc.id,
+        userId: await getId(doc.data().userEmail),
+        ...doc.data(),
+        Laboratorymodel: false,
+        Usermodel: false,
+        Doctormodel: false,
+      });
+    }
   });
+}
+
+async function getId(prop) {
+  let Xid;
+  const q = query(collection(db, "users"), where("email", "==", prop));
+
+  const querySnapshot = await getDocs(q);
+  querySnapshot.forEach((doc) => {
+    Xid = doc.id;
+  });
+
+  return Xid;
 }
 </script>
 <style>
