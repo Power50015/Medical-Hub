@@ -158,7 +158,7 @@ import {
   uploadBytesResumable,
   getDownloadURL,
 } from "firebase/storage";
-import { getFirestore } from "firebase/firestore";
+import { getFirestore, orderBy } from "firebase/firestore";
 import { collection, getDocs, query, where } from "firebase/firestore";
 
 import { useAuthStore } from "@/stores/auth";
@@ -237,15 +237,18 @@ getresrvationsData();
 
 async function getresrvationsData() {
   resrvationsData.length = 0;
-  const q = query(collection(db, "testRequest"), orderBy("month"));
+  const q = query(
+    collection(db, "testRequest"),
+    orderBy("month"),
+    orderBy("day"),
+    where("laboratoryEmail", "==", auth.userEmail),
+    where("states", "==", 1)
+  );
 
   const querySnapshot = await getDocs(q);
 
   querySnapshot.forEach(async (doc) => {
-    if (
-      doc.data().laboratoryEmail == auth.userEmail &&
-      doc.data().states == 1
-    ) {
+   
       resrvationsData.push({
         docId: doc.id,
         userId: await getId(doc.data().userEmail),
@@ -253,7 +256,7 @@ async function getresrvationsData() {
         Usermodel: false,
         Doctormodel: false,
       });
-    }
+    
   });
 }
 
@@ -263,7 +266,7 @@ async function getId(prop) {
 
   const querySnapshot = await getDocs(q);
   querySnapshot.forEach((doc) => {
-    Xid = doc.id;
+    Xid = doc.data().national;
   });
 
   return Xid;

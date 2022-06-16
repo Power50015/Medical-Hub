@@ -227,20 +227,22 @@ async function getresrvationsData() {
   resrvationsData.length = 0;
   const q = query(
     collection(db, "doctorsReservations"),
-    orderBy("month")
+    orderBy("month"),
+    orderBy("day"),
+    orderBy("time"),
+    where("doctor", "==", auth.userEmail),
+    where("states", "==", 1)
   );
 
   const querySnapshot = await getDocs(q);
 
   querySnapshot.forEach(async (doc) => {
-    if (doc.data().doctor == auth.userEmail && doc.data().states == 1) {
-      resrvationsData.push({
-        docId: doc.id,
-        ...doc.data(),
-        Usermodel: false,
-        userId: await getId(doc.data().userEmail),
-      });
-    }
+    resrvationsData.push({
+      docId: doc.id,
+      ...doc.data(),
+      Usermodel: false,
+      userId: await getId(doc.data().userEmail),
+    });
   });
 }
 
@@ -265,7 +267,7 @@ async function getId(prop) {
 
   const querySnapshot = await getDocs(q);
   querySnapshot.forEach((doc) => {
-    Xid = doc.id;
+    Xid = doc.data().national;
   });
 
   return Xid;

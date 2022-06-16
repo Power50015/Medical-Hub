@@ -83,7 +83,7 @@ import UserModel from "@/components/user/UserModel.vue";
 import DoctorModel from "@/components/doctor/DoctorModel.vue";
 
 import app from "@/firebase";
-import { getFirestore } from "firebase/firestore";
+import { getFirestore, orderBy } from "firebase/firestore";
 import { collection, getDocs, query, where } from "firebase/firestore";
 
 import { useAuthStore } from "@/stores/auth";
@@ -98,20 +98,24 @@ getresrvationsData();
 
 async function getresrvationsData() {
   resrvationsData.length = 0;
-  const q = query(collection(db, "doctorsReservations"), orderBy("month"));
+  const q = query(
+    collection(db, "doctorsReservations"),
+    orderBy("month"),
+    orderBy("day"),
+    where("insurance", "==", auth.userEmail),
+    where("states", "==", 0)
+  );
 
   const querySnapshot = await getDocs(q);
 
   querySnapshot.forEach(async (doc) => {
-    if (doc.data().insurance == auth.userEmail && doc.data().states == 0) {
-      resrvationsData.push({
-        docId: doc.id,
-        userId: await getId(doc.data().userEmail),
-        ...doc.data(),
-        Usermodel: false,
-        Doctormodel: false,
-      });
-    }
+    resrvationsData.push({
+      docId: doc.id,
+      userId: await getId(doc.data().userEmail),
+      ...doc.data(),
+      Usermodel: false,
+      Doctormodel: false,
+    });
   });
 }
 
@@ -121,7 +125,7 @@ async function getId(prop) {
 
   const querySnapshot = await getDocs(q);
   querySnapshot.forEach((doc) => {
-    Xid = doc.id;
+    Xid = doc.data().national;
   });
 
   return Xid;

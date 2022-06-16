@@ -64,7 +64,7 @@ import UserModel from "@/components/user/UserModel.vue";
 import LaboratoryModel from "@/components/laboratory/LaboratoryModel.vue";
 
 import app from "@/firebase";
-import { getFirestore } from "firebase/firestore";
+import { getFirestore, orderBy } from "firebase/firestore";
 import { collection, getDocs, query, where } from "firebase/firestore";
 
 import { useAuthStore } from "@/stores/auth";
@@ -82,20 +82,20 @@ async function getresrvationsData() {
   const q = query(
     collection(db, "testResult"),
     orderBy("month"),
+    orderBy("day"),
+    where("doctorEmail", "==", auth.userEmail)
   );
 
   const querySnapshot = await getDocs(q);
 
   querySnapshot.forEach(async (doc) => {
-    if (doc.data().doctor == auth.doctorEmail) {
-      resrvationsData.push({
-        docId: doc.id,
-        userId: await getId(doc.data().userEmail),
-        ...doc.data(),
-        Usermodel: false,
-        Laboratorymodel: false,
-      });
-    }
+    resrvationsData.push({
+      docId: doc.id,
+      userId: await getId(doc.data().userEmail),
+      ...doc.data(),
+      Usermodel: false,
+      Laboratorymodel: false,
+    });
   });
 }
 
@@ -105,7 +105,7 @@ async function getId(prop) {
 
   const querySnapshot = await getDocs(q);
   querySnapshot.forEach((doc) => {
-    Xid = doc.id;
+    Xid = doc.data().national;
   });
 
   return Xid;
